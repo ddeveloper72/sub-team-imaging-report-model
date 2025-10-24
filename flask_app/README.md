@@ -1,8 +1,21 @@
-# HSE Xt-EHR Analysis Platform
+# Xt-EHR T7.2 Imaging Reports Analysis - Web Application
 
-A mobile-first Flask web application for viewing and exporting Xt-EHR Imaging Report analysis documents with Health Service Executive (HSE) branding.
+A mobile-first Flask web application for viewing and exporting Xt-EHR Imaging Report analysis documents with professional healthcare organization branding and user-selectable PDF orientations.
 
-## Features
+## 🚀 Quick Start
+
+```bash
+# From the project root directory
+cd flask_app
+
+# Install dependencies (use project root requirements)
+pip install -r ../requirements.txt
+
+# Start the application
+python app.py
+```
+
+The application will be available at: `http://localhost:5000`
 
 ### 📱 Mobile-First Design
 - **Responsive Layout**: Optimized for mobile devices first, scales up to desktop

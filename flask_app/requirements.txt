@@ -1,4 +1,15 @@
-Flask==3.0.0
-Markdown==3.5.1
-pdfkit==1.0.0
-pathlib
+# Flask App Dependencies - Use project root ../requirements.txt instead
+# This file is kept for compatibility but refer to ../requirements.txt for current dependencies
+
+# Core dependencies are now managed at project level:
+# Flask==3.0.0
+# Werkzeug==3.0.4  
+# Jinja2==3.1.4
+# MarkupSafe==3.0.2
+# itsdangerous==2.2.0
+# click==8.1.7
+# Markdown==3.5.1
+# reportlab==4.4.4
+
+# To install dependencies:
+# pip install -r ../requirements.txt
