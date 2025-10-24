@@ -150,17 +150,20 @@
                     </li>
                     <li>
                         <div class="dropdown-item-text">
-                            <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST" class="d-inline-block">
+                            <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST"
+                                class="d-inline-block">
                                 <div class="mb-2">
                                     <small class="text-muted">PDF Orientation:</small>
                                 </div>
                                 <div class="btn-group btn-group-sm mb-2" role="group">
-                                    <input type="radio" class="btn-check" name="pdf_orientation" id="docOrientationPortrait" value="portrait">
+                                    <input type="radio" class="btn-check" name="pdf_orientation"
+                                        id="docOrientationPortrait" value="portrait">
                                     <label class="btn btn-outline-secondary" for="docOrientationPortrait">
                                         <i class="fas fa-mobile-alt"></i> Portrait
                                     </label>
-                                    
-                                    <input type="radio" class="btn-check" name="pdf_orientation" id="docOrientationLandscape" value="landscape" checked>
+
+                                    <input type="radio" class="btn-check" name="pdf_orientation"
+                                        id="docOrientationLandscape" value="landscape" checked>
                                     <label class="btn btn-outline-secondary" for="docOrientationLandscape">
                                         <i class="fas fa-desktop"></i> Landscape
                                     </label>
