@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - HCO Xt-EHR Analysis</title>
+    <title>{{ title }} - Xt-EHR T7.2 Analysis</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -73,8 +73,8 @@
                 <div class="mb-2 mb-md-0">
                     <h1 class="h4 h-md-2 mb-1">
                         <i class="fas fa-hospital me-2"></i>
-                        <span class="d-none d-sm-inline">Healthcare Organisation</span>
-                        <span class="d-inline d-sm-none">HCO</span>
+                        <span class="d-none d-sm-inline">Xt-EHR T7.2 Sub-team for Imaging Reports Model</span>
+                        <span class="d-inline d-sm-none">Xt-EHR T7.2</span>
                     </h1>
                     <p class="subtitle mb-0 small">{{ title.replace('-', ' ').replace('_', ' ').title() }}</p>
                 </div>
@@ -149,9 +149,29 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ url_for('export_pdf', doc_path=doc_path) }}">
-                            <i class="fas fa-file-pdf me-2"></i>Export PDF
-                        </a>
+                        <div class="dropdown-item-text">
+                            <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST" class="d-inline-block">
+                                <div class="mb-2">
+                                    <small class="text-muted">PDF Orientation:</small>
+                                </div>
+                                <div class="btn-group btn-group-sm mb-2" role="group">
+                                    <input type="radio" class="btn-check" name="pdf_orientation" id="docOrientationPortrait" value="portrait">
+                                    <label class="btn btn-outline-secondary" for="docOrientationPortrait">
+                                        <i class="fas fa-mobile-alt"></i> Portrait
+                                    </label>
+                                    
+                                    <input type="radio" class="btn-check" name="pdf_orientation" id="docOrientationLandscape" value="landscape" checked>
+                                    <label class="btn btn-outline-secondary" for="docOrientationLandscape">
+                                        <i class="fas fa-desktop"></i> Landscape
+                                    </label>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-hse-primary btn-sm">
+                                        <i class="fas fa-file-pdf me-1"></i>Export PDF
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ url_for('index') }}">
@@ -192,7 +212,7 @@
         <div class="container-fluid px-3">
             <div class="d-flex align-items-center justify-content-between">
                 <small class="text-muted">
-                    <i class="fas fa-copyright me-1"></i>HCO - Xt-EHR Analysis Platform
+                    <i class="fas fa-copyright me-1"></i>Xt-EHR T7.2 Sub-team for Imaging Reports Model
                 </small>
                 <small class="text-muted">
                     <i class="fas fa-calendar me-1"></i>October 2025

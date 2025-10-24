@@ -9,6 +9,8 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 from reportlab.platypus.flowables import CondPageBreak
+from reportlab.platypus import Flowable
+from reportlab.lib.utils import ImageReader
 from datetime import datetime
 import re
 import html
@@ -19,6 +21,106 @@ app = Flask(__name__)
 BASE_DIR = Path(__file__).parent.parent
 DOCS_DIR = BASE_DIR / 'docs'
 ANALYSIS_DIR = BASE_DIR / 'analysis'
+
+class DocumentSeparator(Flowable):
+    """Custom flowable to create visual document separators"""
+    
+    def __init__(self, doc_title, doc_number, total_docs, width=None, is_landscape=True):
+        Flowable.__init__(self)
+        self.doc_title = doc_title
+        self.doc_number = doc_number
+        self.total_docs = total_docs
+        self.is_landscape = is_landscape
+        
+        # Set width and font sizes based on orientation
+        if is_landscape:
+            self.width = width or 10.2 * inch  # Landscape width
+            self.doc_title_font = 14
+            self.doc_number_font = 16
+            self.branding_font = 10
+        else:
+            self.width = width or 6.8 * inch   # Portrait width
+            self.doc_title_font = 11
+            self.doc_number_font = 12
+            self.branding_font = 8
+            
+        self.height = 1.5 * inch
+    
+    def draw(self):
+        """Draw the document separator"""
+        canvas = self.canv
+        
+        # Draw top border line
+        canvas.setStrokeColor(colors.Color(0, 95/255, 95/255))  # HCO teal
+        canvas.setLineWidth(3)
+        canvas.line(0, self.height - 0.1*inch, self.width, self.height - 0.1*inch)
+        
+        # Draw main title background
+        canvas.setFillColor(colors.Color(0, 95/255, 95/255, alpha=0.1))  # Light teal background
+        canvas.rect(0, self.height - 0.8*inch, self.width, 0.5*inch, fill=1, stroke=0)
+        
+        # Draw document title with orientation-appropriate font size
+        canvas.setFont("Helvetica-Bold", self.doc_number_font)
+        canvas.setFillColor(colors.Color(0, 95/255, 95/255))
+        canvas.drawString(0.2*inch, self.height - 0.6*inch, f"Document {self.doc_number} of {self.total_docs}")
+        
+        # Draw document name with orientation-appropriate font size
+        canvas.setFont("Helvetica-Bold", self.doc_title_font)
+        canvas.setFillColor(colors.Color(30/255, 58/255, 95/255))  # HCO accent blue
+        
+        # Truncate title if too long for portrait mode
+        display_title = self.doc_title
+        if not self.is_landscape and len(display_title) > 50:
+            display_title = display_title[:47] + "..."
+            
+        canvas.drawString(0.2*inch, self.height - 0.9*inch, display_title)
+        
+        # Draw Xt-EHR team branding with orientation-appropriate font size
+        canvas.setFont("Helvetica", self.branding_font)
+        canvas.setFillColor(colors.Color(45/255, 55/255, 72/255))  # HCO neutral
+        
+        # Adjust branding text for portrait mode
+        if self.is_landscape:
+            canvas.drawRightString(self.width - 0.2*inch, self.height - 0.6*inch, "Xt-EHR T7.2 Sub-team for Imaging Reports Model")
+            canvas.drawRightString(self.width - 0.2*inch, self.height - 0.9*inch, "Xt-EHR Analysis Platform")
+        else:
+            # Shorter branding text for portrait mode
+            canvas.drawRightString(self.width - 0.2*inch, self.height - 0.6*inch, "Xt-EHR T7.2 Imaging Reports")
+            canvas.drawRightString(self.width - 0.2*inch, self.height - 0.9*inch, "Analysis Platform")
+        
+        # Draw bottom border line
+        canvas.setStrokeColor(colors.Color(0, 95/255, 95/255))
+        canvas.setLineWidth(1)
+        canvas.line(0, 0.1*inch, self.width, 0.1*inch)
+
+
+class PageFooter(Flowable):
+    """Custom flowable for page footers"""
+    
+    def __init__(self, doc_title, page_info, width=None):
+        Flowable.__init__(self)
+        self.doc_title = doc_title
+        self.page_info = page_info
+        self.width = width or 10.2 * inch
+        self.height = 0.5 * inch
+    
+    def draw(self):
+        """Draw the page footer"""
+        canvas = self.canv
+        
+        # Draw footer line
+        canvas.setStrokeColor(colors.Color(0, 95/255, 95/255, alpha=0.5))
+        canvas.setLineWidth(0.5)
+        canvas.line(0, self.height - 0.1*inch, self.width, self.height - 0.1*inch)
+        
+        # Draw document title on left
+        canvas.setFont("Helvetica", 9)
+        canvas.setFillColor(colors.Color(45/255, 55/255, 72/255))
+        canvas.drawString(0, 0.1*inch, self.doc_title[:60] + "..." if len(self.doc_title) > 60 else self.doc_title)
+        
+        # Draw page info on right
+        canvas.drawRightString(self.width, 0.1*inch, self.page_info)
+
 
 class MarkdownRenderer:
     """Handles markdown rendering and PDF generation"""
@@ -277,10 +379,11 @@ def document_collection():
 
 @app.route('/export-bulk-pdf', methods=['POST'])
 def export_bulk_pdf():
-    """Generate a combined PDF from selected documents"""
+    """Generate a combined PDF from selected documents with user-selected orientation"""
     try:
-        # Get selected documents from form
+        # Get selected documents and orientation from form
         selected_docs = request.form.getlist('selected_documents')
+        pdf_orientation = request.form.get('pdf_orientation', 'landscape')  # Default to landscape
         
         if not selected_docs:
             return jsonify({'error': 'No documents selected'}), 400
@@ -288,19 +391,36 @@ def export_bulk_pdf():
         # Create a BytesIO buffer to store the PDF
         buffer = io.BytesIO()
         
-        # Create PDF document with landscape orientation for better table display
-        doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), 
+        # Create PDF document with user-selected orientation
+        if pdf_orientation == 'portrait':
+            page_size = A4
+        else:
+            page_size = landscape(A4)
+            
+        doc = SimpleDocTemplate(buffer, pagesize=page_size, 
                               rightMargin=0.8*inch, leftMargin=0.8*inch,
                               topMargin=1*inch, bottomMargin=1*inch)
         
         # Get styles
         styles = getSampleStyleSheet()
         
-        # Create custom styles with HCO colors
+        # Determine font sizes based on orientation
+        if page_size == landscape(A4):
+            # Landscape orientation - more horizontal space, can use larger fonts
+            title_font_size = 22
+            doc_title_font_size = 18
+            heading_font_size = 16
+        else:
+            # Portrait orientation - less horizontal space, use smaller fonts to prevent overflow
+            title_font_size = 14
+            doc_title_font_size = 12
+            heading_font_size = 11
+        
+        # Create custom styles with HCO colors and dynamic sizing
         title_style = ParagraphStyle(
             'CustomTitle',
             parent=styles['Heading1'],
-            fontSize=18,
+            fontSize=title_font_size,
             textColor=colors.Color(0, 95/255, 95/255),  # HCO primary teal
             spaceAfter=30,
             alignment=1  # Center alignment
@@ -309,7 +429,7 @@ def export_bulk_pdf():
         doc_title_style = ParagraphStyle(
             'DocTitle',
             parent=styles['Heading1'],
-            fontSize=16,
+            fontSize=doc_title_font_size,
             textColor=colors.Color(0, 95/255, 95/255),  # HCO primary teal
             spaceBefore=30,
             spaceAfter=20,
@@ -319,7 +439,7 @@ def export_bulk_pdf():
         heading_style = ParagraphStyle(
             'CustomHeading',
             parent=styles['Heading2'],
-            fontSize=14,
+            fontSize=heading_font_size,
             textColor=colors.Color(45/255, 90/255, 39/255),  # HCO secondary green
             spaceBefore=20,
             spaceAfter=12
@@ -337,7 +457,7 @@ def export_bulk_pdf():
         story = []
         
         # Add main header
-        story.append(Paragraph("Healthcare Organisation", title_style))
+        story.append(Paragraph("Xt-EHR T7.2 Sub-team for Imaging Reports Model", title_style))
         story.append(Paragraph("Xt-EHR Analysis Platform - Document Collection", normal_style))
         story.append(Paragraph(f"Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}", normal_style))
         story.append(Spacer(1, 30))
@@ -361,14 +481,38 @@ def export_bulk_pdf():
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
                 
-                # Add page break before each new document (except the first)
+                # Add document separator (except for the first document)
                 if i > 1:
-                    from reportlab.platypus import PageBreak
                     story.append(PageBreak())
+                    story.append(Spacer(1, 20))
                 
-                # Add document title
-                story.append(Paragraph(f"Document {i}: {file_path.stem}", doc_title_style))
-                story.append(Spacer(1, 15))
+                # Add prominent document separator
+                doc_separator = DocumentSeparator(
+                    doc_title=file_path.stem.replace('_', ' ').replace('-', ' ').title(),
+                    doc_number=i,
+                    total_docs=len(selected_docs),
+                    is_landscape=(pdf_orientation == 'landscape')
+                )
+                story.append(doc_separator)
+                story.append(Spacer(1, 20))
+                
+                # Add document metadata section
+                metadata_style = ParagraphStyle(
+                    'DocumentMetadata',
+                    parent=normal_style,
+                    fontSize=9,
+                    textColor=colors.Color(100/255, 100/255, 100/255),
+                    leftIndent=0.2*inch,
+                    spaceAfter=15
+                )
+                
+                # Get file stats for metadata
+                file_stat = file_path.stat()
+                file_size = round(file_stat.st_size / 1024, 1)  # Size in KB
+                modified_time = datetime.fromtimestamp(file_stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+                
+                story.append(Paragraph(f"<b>File:</b> {file_path.name} | <b>Size:</b> {file_size} KB | <b>Modified:</b> {modified_time}", metadata_style))
+                story.append(Spacer(1, 10))
                 
                 # Parse markdown content for this document
                 lines = content.split('\n')
@@ -415,8 +559,9 @@ def export_bulk_pdf():
                             line_idx += 1
                         
                         if table_data:
-                            # Use the new wrapped table method
-                            wrapped_table = renderer.create_wrapped_table(table_data, is_landscape=True)
+                            # Use the new wrapped table method with user-selected orientation
+                            is_landscape = (pdf_orientation == 'landscape')
+                            wrapped_table = renderer.create_wrapped_table(table_data, is_landscape=is_landscape)
                             if wrapped_table:
                                 story.append(wrapped_table)
                                 story.append(Spacer(1, 12))
@@ -450,6 +595,21 @@ def export_bulk_pdf():
                             plain_text = html.escape(para_text)
                             story.append(Paragraph(plain_text, normal_style))
                             story.append(Spacer(1, 6))
+                
+                # Add document footer separator
+                story.append(Spacer(1, 20))
+                footer_separator_style = ParagraphStyle(
+                    'FooterSeparator',
+                    parent=normal_style,
+                    fontSize=8,
+                    textColor=colors.Color(150/255, 150/255, 150/255),
+                    alignment=1,  # Center alignment
+                    borderWidth=1,
+                    borderColor=colors.Color(200/255, 200/255, 200/255),
+                    borderPadding=5
+                )
+                story.append(Paragraph(f"— End of Document {i}: {file_path.stem.replace('_', ' ').replace('-', ' ').title()} —", footer_separator_style))
+                story.append(Spacer(1, 15))
                         
             except Exception as e:
                 # Add error note for failed documents with more detail
@@ -458,12 +618,78 @@ def export_bulk_pdf():
                 
                 # Try to add a simple error message to the PDF
                 try:
-                    story.append(Paragraph(f"<b>Error Processing Document:</b> {file_path.stem}", normal_style))
-                    story.append(Paragraph(f"<i>Reason:</i> Document contains formatting that cannot be processed", normal_style))
-                    story.append(Spacer(1, 12))
+                    error_style = ParagraphStyle(
+                        'ErrorMessage',
+                        parent=normal_style,
+                        fontSize=10,
+                        textColor=colors.red,
+                        leftIndent=0.2*inch,
+                        borderWidth=1,
+                        borderColor=colors.red,
+                        borderPadding=10,
+                        backColor=colors.Color(1, 0.95, 0.95)  # Light red background
+                    )
+                    story.append(Paragraph(f"<b>⚠ Error Processing Document {i}:</b> {file_path.stem}", error_style))
+                    story.append(Paragraph(f"<i>Reason:</i> Document contains formatting that cannot be processed", error_style))
+                    story.append(Spacer(1, 20))
+                    
+                    # Add document footer even for errors
+                    footer_separator_style = ParagraphStyle(
+                        'FooterSeparator',
+                        parent=normal_style,
+                        fontSize=8,
+                        textColor=colors.Color(150/255, 150/255, 150/255),
+                        alignment=1,  # Center alignment
+                        borderWidth=1,
+                        borderColor=colors.Color(200/255, 200/255, 200/255),
+                        borderPadding=5
+                    )
+                    story.append(Paragraph(f"— End of Document {i}: {file_path.stem.replace('_', ' ').replace('-', ' ').title()} (Error) —", footer_separator_style))
+                    story.append(Spacer(1, 15))
                 except:
                     # If even the error message fails, continue silently
                     pass
+        
+        # Add final summary section
+        story.append(PageBreak())
+        story.append(Spacer(1, 30))
+        
+        # Final document summary
+        summary_title_style = ParagraphStyle(
+            'SummaryTitle',
+            parent=title_style,
+            fontSize=16,
+            textColor=colors.Color(0, 95/255, 95/255),
+            alignment=1,  # Center alignment
+            spaceAfter=20
+        )
+        
+        summary_style = ParagraphStyle(
+            'SummaryContent',
+            parent=normal_style,
+            fontSize=11,
+            alignment=1,  # Center alignment
+            spaceAfter=10
+        )
+        
+        story.append(Paragraph("📄 Document Collection Summary", summary_title_style))
+        story.append(Paragraph(f"Total Documents Processed: <b>{len(selected_docs)}</b>", summary_style))
+        story.append(Paragraph(f"Generated: <b>{datetime.now().strftime('%B %d, %Y at %I:%M %p')}</b>", summary_style))
+        story.append(Paragraph("Xt-EHR T7.2 Sub-team for Imaging Reports Model", summary_style))
+        story.append(Spacer(1, 30))
+        
+        # Add decorative footer
+        final_footer_style = ParagraphStyle(
+            'FinalFooter',
+            parent=normal_style,
+            fontSize=8,
+            textColor=colors.Color(150/255, 150/255, 150/255),
+            alignment=1,
+            borderWidth=2,
+            borderColor=colors.Color(0, 95/255, 95/255),
+            borderPadding=10
+        )
+        story.append(Paragraph("Thank you for using the Xt-EHR Analysis Platform", final_footer_style))
         
         # Build PDF
         doc.build(story)
@@ -472,9 +698,10 @@ def export_bulk_pdf():
         pdf_bytes = buffer.getvalue()
         buffer.close()
         
-        # Create filename with timestamp
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"HCO_Document_Collection_{timestamp}.pdf"
+        # Create filename with timestamp and orientation
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        orientation_suffix = pdf_orientation.capitalize()
+        filename = f'XtEHR_T7.2_Document_Collection_{orientation_suffix}_{timestamp}.pdf'
         
         # Create response
         response = send_file(
@@ -497,15 +724,21 @@ def export_bulk_pdf():
             'suggestion': 'Some documents contain formatting issues. Try generating PDFs individually to identify problematic documents.'
         }), 500
 
-@app.route('/export-pdf/<path:doc_path>')
+@app.route('/export-pdf/<path:doc_path>', methods=['GET', 'POST'])
 def export_pdf(doc_path):
-    """Export document as PDF"""
+    """Export document as PDF with user-selected orientation"""
     file_path = BASE_DIR / doc_path
     
     if not file_path.exists() or not file_path.suffix == '.md':
         return "Document not found", 404
     
     try:
+        # Get orientation from form (POST) or default to landscape (GET)
+        if request.method == 'POST':
+            pdf_orientation = request.form.get('pdf_orientation', 'landscape')
+        else:
+            pdf_orientation = 'landscape'  # Default for backward compatibility
+            
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
@@ -516,8 +749,13 @@ def export_pdf(doc_path):
             # Create a BytesIO buffer to store the PDF
             buffer = io.BytesIO()
             
-            # Create PDF document with landscape orientation for better table display
-            doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), 
+            # Create PDF document with user-selected orientation
+            if pdf_orientation == 'portrait':
+                page_size = A4
+            else:
+                page_size = landscape(A4)
+                
+            doc = SimpleDocTemplate(buffer, pagesize=page_size, 
                                   rightMargin=0.8*inch, leftMargin=0.8*inch,
                                   topMargin=1*inch, bottomMargin=1*inch)
             
@@ -555,7 +793,7 @@ def export_pdf(doc_path):
             story = []
             
             # Add header
-            story.append(Paragraph("Healthcare Organisation", title_style))
+            story.append(Paragraph("Xt-EHR T7.2 Sub-team for Imaging Reports Model", title_style))
             story.append(Paragraph(f"Xt-EHR Analysis Platform", normal_style))
             story.append(Paragraph(f"Document: {file_path.stem}", heading_style))
             story.append(Paragraph(f"Generated: {datetime.now().strftime('%B %d, %Y')}", normal_style))
@@ -608,8 +846,9 @@ def export_pdf(doc_path):
                         i += 1
                     
                     if table_data:
-                        # Use the new wrapped table method
-                        wrapped_table = renderer.create_wrapped_table(table_data, is_landscape=True)
+                        # Use the new wrapped table method with user-selected orientation
+                        is_landscape = (pdf_orientation == 'landscape')
+                        wrapped_table = renderer.create_wrapped_table(table_data, is_landscape=is_landscape)
                         if wrapped_table:
                             story.append(wrapped_table)
                             story.append(Spacer(1, 12))
@@ -653,12 +892,13 @@ def export_pdf(doc_path):
             pdf_bytes = buffer.getvalue()
             buffer.close()
             
-            # Create response
+            # Create response with orientation in filename
+            orientation_suffix = pdf_orientation.capitalize()
             response = send_file(
                 io.BytesIO(pdf_bytes),
                 mimetype='application/pdf',
                 as_attachment=True,
-                download_name=f"{file_path.stem}.pdf"
+                download_name=f"{file_path.stem}_{orientation_suffix}.pdf"
             )
             return response
         except Exception as pdf_error:
