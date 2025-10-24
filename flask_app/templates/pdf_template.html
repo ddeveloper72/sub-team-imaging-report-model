@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{{ title }} - HCO</title>
@@ -9,7 +10,7 @@
             size: a4 portrait;
             margin: 1in 0.8in 1in 0.8in;
         }
-        
+
         body {
             font-family: Arial, sans-serif;
             color: #2d3748;
@@ -18,30 +19,30 @@
             padding: 0;
             font-size: 12pt;
         }
-        
+
         .header {
             background: #005f5f;
             color: white;
             padding: 20px;
             margin-bottom: 30px;
         }
-        
+
         .header h1 {
             margin: 0;
             font-size: 24px;
             font-weight: 600;
         }
-        
+
         .header .subtitle {
             margin: 5px 0 0 0;
             font-size: 14px;
             opacity: 0.9;
         }
-        
+
         .content {
             padding: 0 20px;
         }
-        
+
         h1 {
             color: #005f5f;
             border-bottom: 3px solid #2d5a27;
@@ -49,28 +50,28 @@
             margin-bottom: 20px;
             page-break-after: avoid;
         }
-        
+
         h2 {
             color: #2d5a27;
             margin-top: 30px;
             margin-bottom: 15px;
             page-break-after: avoid;
         }
-        
+
         h3 {
             color: #005f5f;
             margin-top: 25px;
             margin-bottom: 12px;
             page-break-after: avoid;
         }
-        
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin: 20px 0;
             page-break-inside: avoid;
         }
-        
+
         th {
             background-color: #005f5f;
             color: white;
@@ -78,16 +79,16 @@
             text-align: left;
             font-weight: 600;
         }
-        
+
         td {
             padding: 10px 12px;
             border-bottom: 1px solid #ddd;
         }
-        
+
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-        
+
         pre {
             background-color: #f7fafc;
             padding: 15px;
@@ -95,13 +96,13 @@
             overflow: hidden;
             page-break-inside: avoid;
         }
-        
+
         code {
             background-color: #f7fafc;
             padding: 2px 4px;
             border-radius: 3px;
         }
-        
+
         blockquote {
             border-left: 4px solid #005f5f;
             margin: 20px 0;
@@ -109,7 +110,7 @@
             background-color: #f7fafc;
             font-style: italic;
         }
-        
+
         .footer {
             position: fixed;
             bottom: 0;
@@ -125,35 +126,38 @@
             font-size: 12px;
             color: #2d3748;
         }
-        
+
         .page-break {
             page-break-before: always;
         }
-        
+
         @page {
             margin: 1in 0.8in;
+
             @bottom-right {
                 content: "Page " counter(page);
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <div class="header">
         <h1>Healthcare Organisation</h1>
         <div class="subtitle">{{ title.replace('-', ' ').replace('_', ' ').title() }}</div>
     </div>
-    
+
     <!-- Content -->
     <div class="content">
         {{ content | safe }}
     </div>
-    
+
     <!-- Footer -->
     <div class="footer">
         <div>© Healthcare Organisation - Xt-EHR Analysis Platform</div>
         <div>{{ date }}</div>
     </div>
 </body>
+
 </html>

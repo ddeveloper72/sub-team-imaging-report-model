@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Collection - HCO Xt-EHR Analysis</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- HCO Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='hco-styles.css') }}">
+
+    <style>
+        .collection-card {
+            position: relative;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+        }
+
+        .collection-card.selected {
+            border-left-color: #005f5f;
+            background-color: rgba(0, 95, 95, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 95, 95, 0.15);
+            border-color: #005f5f;
+        }
+
+        .collection-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+            border-color: #005f5f;
+        }
+
+        .select-checkbox {
+            transform: scale(1.3);
+            accent-color: #005f5f;
+            border: 2px solid #005f5f !important;
+            background-color: white !important;
+            margin-right: 8px;
+        }
+
+        .select-checkbox:checked {
+            background-color: #005f5f !important;
+            border-color: #005f5f !important;
+        }
+
+        .select-checkbox:focus {
+            box-shadow: 0 0 0 3px rgba(0, 95, 95, 0.2);
+            outline: none;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            background-color: rgba(0, 95, 95, 0.08);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(0, 95, 95, 0.2);
+        }
+
+        .checkbox-container:hover {
+            background-color: rgba(0, 95, 95, 0.12);
+            border-color: rgba(0, 95, 95, 0.3);
+        }
+
+        .bulk-actions {
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .selection-count {
+            font-weight: 600;
+            color: #005f5f;
+        }
+
+        .category-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .category-documentation {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .category-analysis {
+            background-color: #e8f5e8;
+            color: #2d5a27;
+        }
+
+        .category-project-root {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .selection-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #005f5f;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+
+        .collection-card.selected .selection-indicator {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HCO Header - Mobile First -->
+    <header class="hse-header">
+        <div class="container-fluid px-3">
+            <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
+                <div class="mb-2 mb-md-0">
+                    <h1 class="h4 h-md-2 mb-1">
+                        <i class="fas fa-hospital me-2"></i>
+                        <span class="d-none d-sm-inline">Healthcare Organisation</span>
+                        <span class="d-inline d-sm-none">HCO</span>
+                    </h1>
+                    <p class="subtitle mb-0 small">Document Collection & Bulk PDF Generation</p>
+                </div>
+                <div class="text-start text-md-end">
+                    <small class="text-light">
+                        <i class="fas fa-calendar me-1"></i>October 2025
+                    </small>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="hse-nav">
+        <div class="container-fluid px-3">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('index') }}" class="btn btn-hse-outline btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>
+                        <span class="d-none d-sm-inline">Back to Documents</span>
+                        <span class="d-inline d-sm-none">Back</span>
+                    </a>
+                    <span class="text-muted small">
+                        <i class="fas fa-layer-group me-1"></i>Document Collection
+                    </span>
+                </div>
+                <button class="btn btn-hse-primary btn-sm" id="selectAllBtn">
+                    <i class="fas fa-check-double me-1"></i>Select All
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid px-3 py-4">
+        <form id="bulkPdfForm" method="POST" action="{{ url_for('export_bulk_pdf') }}">
+
+            <!-- Bulk Actions Panel -->
+            <div class="bulk-actions">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5 class="mb-1">
+                            <i class="fas fa-tasks me-2 text-primary"></i>Bulk PDF Generation
+                        </h5>
+                        <p class="mb-0 text-muted small">
+                            Select documents to combine into a single PDF
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                        <div class="d-flex flex-column flex-md-row align-items-md-center gap-3 justify-content-md-end">
+                            <div class="selection-info">
+                                <span class="selection-count" id="selectionCount">0</span> documents selected
+                            </div>
+                            <button type="submit" class="btn btn-hse-primary" id="generatePdfBtn" disabled>
+                                <i class="fas fa-file-pdf me-2"></i>Generate Combined PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Grid -->
+            <div class="row" id="documentGrid">
+                {% for file in files %}
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    <div class="card collection-card h-100"
+                        data-category="{{ file.category.lower().replace(' ', '-') }}">
+                        <div class="selection-indicator">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="card-header">
+                            <div class="checkbox-container">
+                                <input class="form-check-input select-checkbox" type="checkbox"
+                                    name="selected_documents" value="{{ file.path }}" id="doc_{{ loop.index }}">
+                                <label class="form-check-label fw-bold mb-0" for="doc_{{ loop.index }}">
+                                    {{ file.name }}
+                                </label>
+                            </div>
+                            <span class="category-badge category-{{ file.category.lower().replace(' ', '-') }} mt-2">
+                                {{ file.category }}
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex align-items-center text-muted small mb-2">
+                                <i class="fas fa-file-markdown me-2"></i>
+                                <span>{{ file.path }}</span>
+                            </div>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="{{ url_for('view_document', doc_path=file.path) }}"
+                                    class="btn btn-hse-outline btn-sm flex-fill" target="_blank">
+                                    <i class="fas fa-eye me-1"></i>Preview
+                                </a>
+                                <a href="{{ url_for('export_pdf', doc_path=file.path) }}"
+                                    class="btn btn-hse-secondary btn-sm">
+                                    <i class="fas fa-download me-1"></i>PDF
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% if not files %}
+            <div class="text-center py-5">
+                <div class="text-muted">
+                    <i class="fas fa-folder-open fa-3x mb-3"></i>
+                    <h4>No Documents Found</h4>
+                    <p>No markdown documents are available in the project directories.</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-hse-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Go Back
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light border-top py-3 mt-5">
+        <div class="container-fluid px-3">
+            <div
+                class="d-flex flex-column flex-sm-row align-items-center justify-content-between text-center text-sm-start">
+                <p class="mb-2 mb-sm-0 text-muted small">
+                    <i class="fas fa-copyright me-1"></i>
+                    <span class="d-none d-md-inline">Healthcare Organisation - Xt-EHR Analysis Platform</span>
+                    <span class="d-inline d-md-none">HCO - Xt-EHR Analysis Platform</span>
+                </p>
+                <small class="text-muted">
+                    <i class="fas fa-calendar me-1"></i>October 2025
+                </small>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Collection Page JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('input[name="selected_documents"]');
+            const cards = document.querySelectorAll('.collection-card');
+            const selectionCount = document.getElementById('selectionCount');
+            const generateBtn = document.getElementById('generatePdfBtn');
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const form = document.getElementById('bulkPdfForm');
+
+            let allSelected = false;
+
+            // Update selection count and button state
+            function updateSelection() {
+                const selectedCount = document.querySelectorAll('input[name="selected_documents"]:checked').length;
+                selectionCount.textContent = selectedCount;
+                generateBtn.disabled = selectedCount === 0;
+
+                // Update select all button
+                allSelected = selectedCount === checkboxes.length;
+                selectAllBtn.innerHTML = allSelected
+                    ? '<i class="fas fa-times me-1"></i>Deselect All'
+                    : '<i class="fas fa-check-double me-1"></i>Select All';
+            }
+
+            // Handle individual checkbox changes
+            checkboxes.forEach((checkbox, index) => {
+                checkbox.addEventListener('change', function () {
+                    const card = cards[index];
+                    if (this.checked) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                    updateSelection();
+                });
+            });
+
+            // Handle card clicks (toggle checkbox)
+            cards.forEach((card, index) => {
+                card.addEventListener('click', function (e) {
+                    // Don't toggle if clicking on the checkbox itself or buttons
+                    if (e.target.type !== 'checkbox' && !e.target.closest('.btn')) {
+                        const checkbox = checkboxes[index];
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+
+            // Handle select/deselect all
+            selectAllBtn.addEventListener('click', function () {
+                const shouldSelect = !allSelected;
+                checkboxes.forEach((checkbox, index) => {
+                    checkbox.checked = shouldSelect;
+                    const card = cards[index];
+                    if (shouldSelect) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                });
+                updateSelection();
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', function (e) {
+                const selectedCount = document.querySelectorAll('input[name="selected_documents"]:checked').length;
+                if (selectedCount === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one document to generate a PDF.');
+                    return;
+                }
+
+                // Show loading state
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating PDF...';
+                generateBtn.disabled = true;
+
+                // Reset button after a delay (in case of errors)
+                setTimeout(() => {
+                    generateBtn.innerHTML = '<i class="fas fa-file-pdf me-2"></i>Generate Combined PDF';
+                    generateBtn.disabled = selectedCount === 0;
+                }, 5000);
+            });
+
+            // Initialize
+            updateSelection();
+        });
+    </script>
+</body>
+
+</html>
