@@ -1,0 +1,27 @@
+# Production Dependencies for Xt-EHR T7.2 Imaging Reports Analysis
+# ===================================================================
+
+# Include core requirements
+-r requirements.txt
+
+# Production WSGI Server
+gunicorn==21.2.0
+
+# Static File Serving
+whitenoise==6.6.0
+
+# Environment Management
+python-dotenv==1.0.0
+
+# Enhanced Security Headers
+flask-talisman==1.1.0
+
+# Performance Monitoring (optional)
+# newrelic==9.2.0
+
+# Logging Enhancements
+structlog==23.2.0
+
+# Database (if needed in future)
+# SQLAlchemy==2.0.23
+# Flask-SQLAlchemy==3.1.1

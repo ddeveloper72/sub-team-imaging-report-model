@@ -1,0 +1,35 @@
+# Development Dependencies for Xt-EHR T7.2 Imaging Reports Analysis
+# ====================================================================
+
+# Include core requirements
+-r requirements.txt
+
+# Testing Framework
+pytest==7.4.3
+pytest-flask==1.3.0
+pytest-cov==4.1.0
+
+# Code Formatting and Linting
+black==23.10.1
+flake8==6.1.0
+isort==5.12.0
+
+# Enhanced Markdown Features
+pymdown-extensions==10.4
+
+# Image Processing for PDFs (if needed)
+Pillow==10.1.0
+
+# Environment Management
+python-dotenv==1.0.0
+
+# Development Server Enhancements
+flask-debugtoolbar==0.13.1
+
+# Documentation Generation
+mkdocs==1.5.3
+mkdocs-material==9.4.8
+
+# Type Checking (optional)
+mypy==1.6.1
+types-Markdown==3.5.0.3

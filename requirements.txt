@@ -1,0 +1,20 @@
+# Core Flask Application Dependencies for Xt-EHR T7.2 Imaging Reports Analysis
+# ================================================================================
+
+# Flask Web Framework
+Flask==3.0.0
+Werkzeug==3.0.4
+Jinja2==3.1.4
+MarkupSafe==3.0.2
+itsdangerous==2.2.0
+click==8.1.7
+
+# Markdown Processing
+Markdown==3.5.1
+
+# PDF Generation with ReportLab
+reportlab==4.4.4
+
+# ================================================================================
+# All other dependencies (os, io, pathlib, datetime, html, re) are Python built-ins
+# ================================================================================
