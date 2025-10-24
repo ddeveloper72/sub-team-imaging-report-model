@@ -131,20 +131,20 @@
             opacity: 1;
             transform: scale(1);
         }
-        
+
         .orientation-selector {
             min-width: 200px;
         }
-        
+
         .orientation-selector .btn-group {
             width: 100%;
         }
-        
+
         .orientation-selector .btn {
             flex: 1;
             font-size: 0.875rem;
         }
-        
+
         .orientation-selector .form-text {
             margin-top: 0.25rem;
             font-size: 0.75rem;
@@ -214,17 +214,19 @@
                             <div class="selection-info">
                                 <span class="selection-count" id="selectionCount">0</span> documents selected
                             </div>
-                            
+
                             <!-- PDF Orientation Selection -->
                             <div class="orientation-selector">
                                 <label class="form-label small text-muted mb-1">PDF Orientation:</label>
                                 <div class="btn-group btn-group-sm" role="group" aria-label="PDF Orientation">
-                                    <input type="radio" class="btn-check" name="pdf_orientation" id="orientationPortrait" value="portrait">
+                                    <input type="radio" class="btn-check" name="pdf_orientation"
+                                        id="orientationPortrait" value="portrait">
                                     <label class="btn btn-outline-secondary" for="orientationPortrait">
                                         <i class="fas fa-mobile-alt me-1"></i>Portrait
                                     </label>
-                                    
-                                    <input type="radio" class="btn-check" name="pdf_orientation" id="orientationLandscape" value="landscape" checked>
+
+                                    <input type="radio" class="btn-check" name="pdf_orientation"
+                                        id="orientationLandscape" value="landscape" checked>
                                     <label class="btn btn-outline-secondary" for="orientationLandscape">
                                         <i class="fas fa-desktop me-1"></i>Landscape
                                     </label>
@@ -233,7 +235,7 @@
                                     <span id="orientationHint">Landscape recommended for wide tables</span>
                                 </div>
                             </div>
-                            
+
                             <button type="submit" class="btn btn-hse-primary" id="generatePdfBtn" disabled>
                                 <i class="fas fa-file-pdf me-2"></i>Generate Combined PDF
                             </button>
@@ -347,9 +349,9 @@
             // Handle orientation selection hints
             const orientationRadios = document.querySelectorAll('input[name="pdf_orientation"]');
             const orientationHint = document.getElementById('orientationHint');
-            
+
             orientationRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
+                radio.addEventListener('change', function () {
                     if (this.value === 'portrait') {
                         orientationHint.innerHTML = '<i class="fas fa-info-circle me-1"></i>Portrait mode - standard document layout';
                     } else {
