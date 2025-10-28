@@ -9,11 +9,17 @@ MarkupSafe==3.0.2
 itsdangerous==2.2.0
 click==8.1.7
 
+# Environment Variables
+python-dotenv==1.2.1
+
 # Markdown Processing
 Markdown==3.5.1
 
 # PDF Generation with ReportLab
 reportlab==4.4.4
+
+# Production Server (for deployment)
+gunicorn==22.0.0
 
 # ================================================================================
 # All other dependencies (os, io, pathlib, datetime, html, re) are Python built-ins
