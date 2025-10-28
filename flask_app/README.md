@@ -17,6 +17,17 @@ python app.py
 
 The application will be available at: `http://localhost:5000`
 
+## 📊 Data Sources
+
+This application displays analysis results based on:
+
+- **PARROT v1.0 Dataset**: https://github.com/PARROT-reports/PARROT_v1.0
+  - Multi-language dataset of real-world radiology reports (2,738 reports)
+  - 14 languages, 21 countries, 10 imaging modalities
+- **Xt-EHR FHIR Implementation Guide**: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html
+  - Comprehensive imaging report and study data models
+  - Cross-border health data exchange standards
+
 ### 📱 Mobile-First Design
 - **Responsive Layout**: Optimized for mobile devices first, scales up to desktop
 - **Touch-Friendly**: Large buttons, easy navigation, swipe-friendly interfaces
@@ -222,3 +233,18 @@ python app.py
 ## License
 
 © Health Service Executive - This application is designed for HSE internal use with official branding and styling guidelines.
+
+## Acknowledgments
+
+This application displays analysis results that build upon the work of:
+
+### PARROT Project
+- **Source**: https://github.com/PARROT-reports/PARROT_v1.0
+- **Contribution**: Provides the foundational real-world imaging report dataset that enables evidence-based analysis of clinical data element usage patterns.
+
+### Xt-EHR Project
+- **Source**: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html
+- **Contribution**: Provides the comprehensive FHIR-based imaging report data models that serve as the reference standard for comparative analysis.
+
+We gratefully acknowledge both projects for their contributions to advancing standardized health data exchange and enabling evidence-based implementation guidance.
+```

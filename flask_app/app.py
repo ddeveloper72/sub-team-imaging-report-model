@@ -672,10 +672,27 @@ def export_bulk_pdf():
             spaceAfter=10
         )
         
+        # Credits section
+        credits_style = ParagraphStyle(
+            'CreditsContent',
+            parent=normal_style,
+            fontSize=9,
+            textColor=colors.Color(100/255, 100/255, 100/255),
+            alignment=1,  # Center alignment
+            spaceAfter=8
+        )
+        
         story.append(Paragraph("📄 Document Collection Summary", summary_title_style))
         story.append(Paragraph(f"Total Documents Processed: <b>{len(selected_docs)}</b>", summary_style))
         story.append(Paragraph(f"Generated: <b>{datetime.now().strftime('%B %d, %Y at %I:%M %p')}</b>", summary_style))
         story.append(Paragraph("Xt-EHR T7.2 Sub-team for Imaging Reports Model", summary_style))
+        story.append(Spacer(1, 20))
+        
+        # Add data source credits
+        story.append(Paragraph("Data Sources", summary_title_style))
+        story.append(Paragraph("Analysis based on PARROT v1.0 dataset and Xt-EHR FHIR Implementation Guide", credits_style))
+        story.append(Paragraph("PARROT v1.0: https://github.com/PARROT-reports/PARROT_v1.0", credits_style))
+        story.append(Paragraph("Xt-EHR: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html", credits_style))
         story.append(Spacer(1, 30))
         
         # Add decorative footer
@@ -797,6 +814,18 @@ def export_pdf(doc_path):
             story.append(Paragraph(f"Xt-EHR Analysis Platform", normal_style))
             story.append(Paragraph(f"Document: {file_path.stem}", heading_style))
             story.append(Paragraph(f"Generated: {datetime.now().strftime('%B %d, %Y')}", normal_style))
+            story.append(Spacer(1, 10))
+            
+            # Add data source credits
+            credits_style = ParagraphStyle(
+                'CreditsContent',
+                parent=normal_style,
+                fontSize=9,
+                textColor=colors.Color(100/255, 100/255, 100/255),
+                alignment=1,  # Center alignment
+                spaceAfter=8
+            )
+            story.append(Paragraph("Analysis based on PARROT v1.0 dataset and Xt-EHR FHIR Implementation Guide", credits_style))
             story.append(Spacer(1, 20))
             
             # Parse markdown content properly

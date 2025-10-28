@@ -90,9 +90,46 @@
                         <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm me-2">
                             <i class="fas fa-arrow-left me-1"></i>Back
                         </a>
-                        <a href="{{ url_for('export_pdf', doc_path=doc_path) }}" class="btn btn-light btn-sm">
-                            <i class="fas fa-file-pdf me-1"></i>PDF
-                        </a>
+                        
+                        <!-- PDF Export with Orientation Options -->
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-file-pdf me-1"></i>PDF
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <h6 class="dropdown-header">
+                                        <i class="fas fa-cog me-1"></i>Choose Orientation
+                                    </h6>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST" class="px-3 py-2">
+                                        <div class="mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="desktopOrientationLandscape" value="landscape" checked>
+                                                <label class="form-check-label small" for="desktopOrientationLandscape">
+                                                    <i class="fas fa-desktop me-1"></i>Landscape
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for wide tables</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="desktopOrientationPortrait" value="portrait">
+                                                <label class="form-check-label small" for="desktopOrientationPortrait">
+                                                    <i class="fas fa-mobile-alt me-1"></i>Portrait
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard document layout</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                                            <i class="fas fa-download me-1"></i>Export PDF
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -104,9 +141,46 @@
                         <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm">
                             <i class="fas fa-arrow-left me-1"></i>Back to Library
                         </a>
-                        <a href="{{ url_for('export_pdf', doc_path=doc_path) }}" class="btn btn-light btn-sm">
-                            <i class="fas fa-file-pdf me-1"></i>Export PDF
-                        </a>
+                        
+                        <!-- PDF Export with Orientation Dropdown for Mobile Header -->
+                        <div class="dropdown">
+                            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-file-pdf me-1"></i>Export PDF
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <h6 class="dropdown-header">
+                                        <i class="fas fa-cog me-1"></i>Choose Orientation
+                                    </h6>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="px-3 py-2">
+                                    <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST">
+                                        <div class="mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="mobileHeaderOrientationLandscape" value="landscape" checked>
+                                                <label class="form-check-label small" for="mobileHeaderOrientationLandscape">
+                                                    <i class="fas fa-desktop me-1"></i>Landscape
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for tables</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="mobileHeaderOrientationPortrait" value="portrait">
+                                                <label class="form-check-label small" for="mobileHeaderOrientationPortrait">
+                                                    <i class="fas fa-mobile-alt me-1"></i>Portrait
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard layout</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                                            <i class="fas fa-download me-1"></i>Export PDF
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -201,9 +275,46 @@
                         <a href="{{ url_for('index') }}" class="btn btn-hse-outline btn-sm">
                             <i class="fas fa-arrow-left me-1"></i>Back to Document Library
                         </a>
-                        <a href="{{ url_for('export_pdf', doc_path=doc_path) }}" class="btn btn-hse-primary btn-sm">
-                            <i class="fas fa-file-pdf me-1"></i>Download as PDF
-                        </a>
+                        
+                        <!-- PDF Export with Orientation Dropdown for Mobile Bottom -->
+                        <div class="dropdown">
+                            <button class="btn btn-hse-primary btn-sm dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-file-pdf me-1"></i>Export as PDF
+                            </button>
+                            <ul class="dropdown-menu w-100">
+                                <li>
+                                    <h6 class="dropdown-header">
+                                        <i class="fas fa-cog me-1"></i>Choose Orientation
+                                    </h6>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="px-3 py-2">
+                                    <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST">
+                                        <div class="mb-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="mobileBottomOrientationLandscape" value="landscape" checked>
+                                                <label class="form-check-label small" for="mobileBottomOrientationLandscape">
+                                                    <i class="fas fa-desktop me-1"></i>Landscape
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for wide tables</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="mobileBottomOrientationPortrait" value="portrait">
+                                                <label class="form-check-label small" for="mobileBottomOrientationPortrait">
+                                                    <i class="fas fa-mobile-alt me-1"></i>Portrait
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard document layout</div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                                            <i class="fas fa-download me-1"></i>Export PDF
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -217,9 +328,15 @@
                 <small class="text-muted">
                     <i class="fas fa-copyright me-1"></i>Xt-EHR T7.2 Sub-team for Imaging Reports Model
                 </small>
-                <small class="text-muted">
-                    <i class="fas fa-calendar me-1"></i>October 2025
-                </small>
+                <div class="d-flex align-items-center gap-3">
+                    <small class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>October 2025
+                    </small>
+                    <small class="text-muted">
+                        Data: <a href="https://github.com/PARROT-reports/PARROT_v1.0" class="text-decoration-none" target="_blank">PARROT v1.0</a> 
+                        & <a href="https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html" class="text-decoration-none" target="_blank">Xt-EHR</a>
+                    </small>
+                </div>
             </div>
         </div>
     </footer>
@@ -270,11 +387,27 @@
             });
 
             // Add loading spinner for PDF exports
+            document.querySelectorAll('form[action*="export-pdf"]').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    const btn = this.querySelector('button[type="submit"]');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
+                    btn.disabled = true;
+
+                    // Re-enable after 5 seconds (timeout)
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }, 5000);
+                });
+            });
+
+            // Also handle direct PDF links for backward compatibility
             document.querySelectorAll('a[href*="export-pdf"]').forEach(link => {
                 link.addEventListener('click', function (e) {
                     const btn = this;
                     const originalText = btn.innerHTML;
-                    btn.innerHTML = '<span class="loading-spinner me-2"></span>Generating...';
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Generating...';
                     btn.classList.add('disabled');
 
                     // Re-enable after 5 seconds (timeout)

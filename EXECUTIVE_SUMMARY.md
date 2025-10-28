@@ -2,9 +2,13 @@
 ## Executive Summary & Recommendations
 
 **Project**: Analysis of Xt-EHR Imaging Report Information Model for Basic vs Beyond Basic Element Classification  
-**Data Source**: PARROT dataset (2,738 real-world imaging reports)  
+**Data Source**: PARROT v1.0 dataset (2,738 real-world imaging reports)  
 **Date**: October 2025  
 **Analysis Framework**: Real-world usage patterns vs. model specification
+
+**Data Sources & Acknowledgments**:
+- **Xt-EHR FHIR Implementation Guide**: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html
+- **PARROT v1.0 Dataset**: https://github.com/PARROT-reports/PARROT_v1.0
 
 ---
 
@@ -184,6 +188,20 @@ This analysis provides evidence-based guidance for prioritizing Xt-EHR Imaging R
 The **31+ beyond basic elements** serve important but specialized functions and should be implemented strategically based on specific institutional needs rather than as universal requirements.
 
 This pragmatic approach can accelerate Xt-EHR adoption while maintaining the option for comprehensive functionality when justified by specific use cases and institutional capacity.
+
+---
+
+## Acknowledgments
+
+This analysis was made possible through the collaboration and contributions of two key projects:
+
+### PARROT Project
+The **PARROT v1.0 dataset** (https://github.com/PARROT-reports/PARROT_v1.0) provides the foundational real-world data for this analysis. This comprehensive collection of 2,738 multi-language imaging reports across 14 languages and 21 countries enables evidence-based assessment of actual clinical usage patterns. Without this rich dataset, empirical validation of the Xt-EHR model elements would not have been possible.
+
+### Xt-EHR Project  
+The **Xt-EHR FHIR Implementation Guide** (https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html) provides the comprehensive imaging report data model that serves as the basis for this classification analysis. The detailed specification of imaging report and study elements enables systematic comparison with real-world usage patterns and supports evidence-based implementation guidance.
+
+We acknowledge the significant contributions of both projects in advancing standardized health data exchange and enabling this comparative analysis.
 
 ---
 

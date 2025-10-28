@@ -3,6 +3,13 @@
 
 Based on real-world usage analysis of 2,738 imaging reports from the PARROT dataset, this document identifies specific Xt-EHR elements that are candidates for "beyond basic" classification.
 
+## Data Sources
+
+- **PARROT v1.0 Dataset**: https://github.com/PARROT-reports/PARROT_v1.0
+  - Real-world imaging reports for empirical usage analysis
+- **Xt-EHR FHIR Implementation Guide**: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html
+  - Imaging Report data model for classification analysis
+
 ## Methodology
 
 Elements were classified based on:

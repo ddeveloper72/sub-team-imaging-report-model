@@ -1,5 +1,16 @@
 # PARROT Dataset Analysis Results
 
+## Data Sources
+
+This analysis is based on:
+
+- **PARROT v1.0 Dataset**: https://github.com/PARROT-reports/PARROT_v1.0
+  - Multi-language dataset of real-world radiology reports for research purposes
+  - 2,738 imaging reports across 14 languages and 21 countries
+- **Xt-EHR FHIR Implementation Guide**: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html
+  - Imaging Report model: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/StructureDefinition-EHDSImagingReport.html
+  - Imaging Study model: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/StructureDefinition-EHDSImagingStudy.html
+
 ## Executive Summary
 
 Analysis of 2,738 real-world imaging reports from the PARROT dataset reveals significant insights about data element usage patterns when compared to the Xt-EHR Imaging Report information model.
