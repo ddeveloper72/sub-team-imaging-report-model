@@ -955,6 +955,14 @@ def api_documents():
     files = renderer.get_document_files()
     return jsonify(files)
 
+@app.route('/favicon.ico')
+def favicon():
+    """Serve the MyHealth@EU favicon"""
+    return send_file(
+        'static/favicon.ico',
+        mimetype='image/vnd.microsoft.icon'
+    )
+
 if __name__ == '__main__':
     # Get configuration from environment variables
     host = os.environ.get('HOST', '0.0.0.0')
