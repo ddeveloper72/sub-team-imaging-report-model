@@ -1,5 +1,19 @@
 # Xt-EHR T7.2 Sub-team for Imaging Reports Model Analysis
 
+[![Heroku App Status](https://heroku-shields.herokuapp.com/sub-team-imaging-report-model)](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/)
+
+## Live Analysis Dashboard
+
+Access the interactive analysis results and visualizations through our deployed web application:
+
+**[🔗 Xt-EHR Imaging Report Analysis Dashboard](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/)**
+
+The dashboard provides:
+- Interactive data element usage statistics
+- Real-world vs. model element mappings
+- Detailed analysis results and recommendations
+- Downloadable reports and visualizations
+
 ## Overview
 This project analyzes the Xt-EHR Imaging Report information model to identify data elements used in reality versus those that could be considered "beyond basic" by comparing with real-world imaging reports from the PARROT dataset.
 
