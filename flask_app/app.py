@@ -14,11 +14,19 @@ from reportlab.lib.utils import ImageReader
 from datetime import datetime
 import re
 import html
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
-# Configuration
-BASE_DIR = Path(__file__).parent.parent
+# Configuration from environment variables
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+app.config['DEBUG'] = os.environ.get('DEBUG', 'False').lower() == 'true'
+
+# Base directory configuration
+BASE_DIR = Path(os.environ.get('BASE_DIR', Path(__file__).parent.parent))
 DOCS_DIR = BASE_DIR / 'docs'
 ANALYSIS_DIR = BASE_DIR / 'analysis'
 
@@ -948,6 +956,13 @@ def api_documents():
     return jsonify(files)
 
 if __name__ == '__main__':
+    # Get configuration from environment variables
+    host = os.environ.get('HOST', '0.0.0.0')
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('DEBUG', 'False').lower() == 'true'
+    
     print(f"Serving documents from: {BASE_DIR}")
-    print(f"Available at: http://localhost:5000")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    print(f"Available at: http://localhost:{port}")
+    print(f"Debug mode: {debug}")
+    
+    app.run(debug=debug, host=host, port=port)
