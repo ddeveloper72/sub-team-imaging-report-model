@@ -1,12 +1,9 @@
 # Xt-EHR T7.2 Sub-team for Imaging Reports Model Analysis
 
-[![Heroku App Status](https://heroku-shields.herokuapp.com/sub-team-imaging-report-model)](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/)
+[![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/) [![Live Demo](https://img.shields.io/badge/demo-live-blue)](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/)
+
 
 ## Live Analysis Dashboard
-
-Access the interactive analysis results and visualizations through our deployed web application:
-
-**[🔗 Xt-EHR Imaging Report Analysis Dashboard](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/)**
 
 The dashboard provides:
 - Interactive data element usage statistics
