@@ -276,7 +276,8 @@
                                     <i class="fas fa-eye me-1"></i>Preview
                                 </a>
                                 <div class="dropdown">
-                                    <button class="btn btn-hse-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button class="btn btn-hse-secondary btn-sm dropdown-toggle" type="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="fas fa-download me-1"></i>PDF
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -285,21 +286,32 @@
                                                 <i class="fas fa-cog me-1"></i>Orientation
                                             </h6>
                                         </li>
-                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
                                         <li class="px-3 py-2">
-                                            <form action="{{ url_for('export_pdf', doc_path=file.path) }}" method="POST">
+                                            <form action="{{ url_for('export_pdf', doc_path=file.path) }}"
+                                                method="POST">
                                                 <div class="mb-2">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="pdf_orientation" id="cardOrientationLandscape{{ loop.index }}" value="landscape" checked>
-                                                        <label class="form-check-label small" for="cardOrientationLandscape{{ loop.index }}">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="pdf_orientation"
+                                                            id="cardOrientationLandscape{{ loop.index }}"
+                                                            value="landscape" checked>
+                                                        <label class="form-check-label small"
+                                                            for="cardOrientationLandscape{{ loop.index }}">
                                                             <i class="fas fa-desktop me-1"></i>Landscape
                                                         </label>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="pdf_orientation" id="cardOrientationPortrait{{ loop.index }}" value="portrait">
-                                                        <label class="form-check-label small" for="cardOrientationPortrait{{ loop.index }}">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="pdf_orientation"
+                                                            id="cardOrientationPortrait{{ loop.index }}"
+                                                            value="portrait">
+                                                        <label class="form-check-label small"
+                                                            for="cardOrientationPortrait{{ loop.index }}">
                                                             <i class="fas fa-mobile-alt me-1"></i>Portrait
                                                         </label>
                                                     </div>
@@ -349,16 +361,20 @@
                     </small>
                     <small class="text-muted d-none d-lg-block">
                         <span class="mx-2">|</span>
-                        Data: <a href="https://github.com/PARROT-reports/PARROT_v1.0" class="text-decoration-none" target="_blank">PARROT v1.0</a> 
-                        & <a href="https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html" class="text-decoration-none" target="_blank">Xt-EHR</a>
+                        Data: <a href="https://github.com/PARROT-reports/PARROT_v1.0" class="text-decoration-none"
+                            target="_blank">PARROT v1.0</a>
+                        & <a href="https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html"
+                            class="text-decoration-none" target="_blank">Xt-EHR</a>
                     </small>
                 </div>
             </div>
             <!-- Mobile credits row -->
             <div class="d-lg-none text-center mt-2">
                 <small class="text-muted">
-                    Data sources: <a href="https://github.com/PARROT-reports/PARROT_v1.0" class="text-decoration-none" target="_blank">PARROT v1.0</a> 
-                    & <a href="https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html" class="text-decoration-none" target="_blank">Xt-EHR</a>
+                    Data sources: <a href="https://github.com/PARROT-reports/PARROT_v1.0" class="text-decoration-none"
+                        target="_blank">PARROT v1.0</a>
+                    & <a href="https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html" class="text-decoration-none"
+                        target="_blank">Xt-EHR</a>
                 </small>
             </div>
         </div>

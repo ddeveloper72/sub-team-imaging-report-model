@@ -90,10 +90,11 @@
                         <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm me-2">
                             <i class="fas fa-arrow-left me-1"></i>Back
                         </a>
-                        
+
                         <!-- PDF Export with Orientation Options -->
                         <div class="btn-group">
-                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-light btn-sm dropdown-toggle" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <i class="fas fa-file-pdf me-1"></i>PDF
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -102,24 +103,31 @@
                                         <i class="fas fa-cog me-1"></i>Choose Orientation
                                     </h6>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST" class="px-3 py-2">
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST"
+                                        class="px-3 py-2">
                                         <div class="mb-2">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="desktopOrientationLandscape" value="landscape" checked>
+                                                <input class="form-check-input" type="radio" name="pdf_orientation"
+                                                    id="desktopOrientationLandscape" value="landscape" checked>
                                                 <label class="form-check-label small" for="desktopOrientationLandscape">
                                                     <i class="fas fa-desktop me-1"></i>Landscape
-                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for wide tables</div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for
+                                                        wide tables</div>
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="desktopOrientationPortrait" value="portrait">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation"
+                                                    id="desktopOrientationPortrait" value="portrait">
                                                 <label class="form-check-label small" for="desktopOrientationPortrait">
                                                     <i class="fas fa-mobile-alt me-1"></i>Portrait
-                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard document layout</div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard
+                                                        document layout</div>
                                                 </label>
                                             </div>
                                         </div>
@@ -141,10 +149,11 @@
                         <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm">
                             <i class="fas fa-arrow-left me-1"></i>Back to Library
                         </a>
-                        
+
                         <!-- PDF Export with Orientation Dropdown for Mobile Header -->
                         <div class="dropdown">
-                            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
                                 <i class="fas fa-file-pdf me-1"></i>Export PDF
                             </button>
                             <ul class="dropdown-menu">
@@ -153,24 +162,32 @@
                                         <i class="fas fa-cog me-1"></i>Choose Orientation
                                     </h6>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li class="px-3 py-2">
                                     <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST">
                                         <div class="mb-2">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="mobileHeaderOrientationLandscape" value="landscape" checked>
-                                                <label class="form-check-label small" for="mobileHeaderOrientationLandscape">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation"
+                                                    id="mobileHeaderOrientationLandscape" value="landscape" checked>
+                                                <label class="form-check-label small"
+                                                    for="mobileHeaderOrientationLandscape">
                                                     <i class="fas fa-desktop me-1"></i>Landscape
-                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for tables</div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for
+                                                        tables</div>
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="mobileHeaderOrientationPortrait" value="portrait">
-                                                <label class="form-check-label small" for="mobileHeaderOrientationPortrait">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation"
+                                                    id="mobileHeaderOrientationPortrait" value="portrait">
+                                                <label class="form-check-label small"
+                                                    for="mobileHeaderOrientationPortrait">
                                                     <i class="fas fa-mobile-alt me-1"></i>Portrait
-                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard layout</div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard layout
+                                                    </div>
                                                 </label>
                                             </div>
                                         </div>
@@ -275,10 +292,11 @@
                         <a href="{{ url_for('index') }}" class="btn btn-hse-outline btn-sm">
                             <i class="fas fa-arrow-left me-1"></i>Back to Document Library
                         </a>
-                        
+
                         <!-- PDF Export with Orientation Dropdown for Mobile Bottom -->
                         <div class="dropdown">
-                            <button class="btn btn-hse-primary btn-sm dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn btn-hse-primary btn-sm dropdown-toggle w-100" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-file-pdf me-1"></i>Export as PDF
                             </button>
                             <ul class="dropdown-menu w-100">
@@ -287,24 +305,32 @@
                                         <i class="fas fa-cog me-1"></i>Choose Orientation
                                     </h6>
                                 </li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li class="px-3 py-2">
                                     <form action="{{ url_for('export_pdf', doc_path=doc_path) }}" method="POST">
                                         <div class="mb-2">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="mobileBottomOrientationLandscape" value="landscape" checked>
-                                                <label class="form-check-label small" for="mobileBottomOrientationLandscape">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation"
+                                                    id="mobileBottomOrientationLandscape" value="landscape" checked>
+                                                <label class="form-check-label small"
+                                                    for="mobileBottomOrientationLandscape">
                                                     <i class="fas fa-desktop me-1"></i>Landscape
-                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for wide tables</div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Recommended for
+                                                        wide tables</div>
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="pdf_orientation" id="mobileBottomOrientationPortrait" value="portrait">
-                                                <label class="form-check-label small" for="mobileBottomOrientationPortrait">
+                                                <input class="form-check-input" type="radio" name="pdf_orientation"
+                                                    id="mobileBottomOrientationPortrait" value="portrait">
+                                                <label class="form-check-label small"
+                                                    for="mobileBottomOrientationPortrait">
                                                     <i class="fas fa-mobile-alt me-1"></i>Portrait
-                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard document layout</div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Standard
+                                                        document layout</div>
                                                 </label>
                                             </div>
                                         </div>
@@ -333,8 +359,10 @@
                         <i class="fas fa-calendar me-1"></i>October 2025
                     </small>
                     <small class="text-muted">
-                        Data: <a href="https://github.com/PARROT-reports/PARROT_v1.0" class="text-decoration-none" target="_blank">PARROT v1.0</a> 
-                        & <a href="https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html" class="text-decoration-none" target="_blank">Xt-EHR</a>
+                        Data: <a href="https://github.com/PARROT-reports/PARROT_v1.0" class="text-decoration-none"
+                            target="_blank">PARROT v1.0</a>
+                        & <a href="https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html"
+                            class="text-decoration-none" target="_blank">Xt-EHR</a>
                     </small>
                 </div>
             </div>

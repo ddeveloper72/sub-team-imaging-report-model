@@ -1,7 +1,195 @@
 
+# ==================================================================
+# .gitignore for FHIR Imaging Report Project
+# Excludes files not needed for deployment or version control
+# ==================================================================
 
-#Ignore vscode AI rules
-.github\instructions\codacy.instructions.md
+# Python
+# --------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
-# Ignore virtual environment folders
+# Virtual Environments
+# --------------------------------------------------------------
+.env
 .venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# IDE and Editor Files
+# --------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS Generated Files
+# --------------------------------------------------------------
+*.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs and Debugging
+# --------------------------------------------------------------
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pip-log.txt
+pip-delete-this-directory.txt
+.coverage
+.pytest_cache/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Local Configuration and Secrets
+# --------------------------------------------------------------
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+instance/
+.webassets-cache
+config.local.py
+secrets.json
+.secrets/
+
+# Database Files (not needed for deployment)
+# --------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+db.sqlite3
+database.db
+
+# Temporary Files and Caches
+# --------------------------------------------------------------
+*.tmp
+*.temp
+.cache/
+.sass-cache/
+node_modules/
+.npm
+.eslintcache
+*.tgz
+*.tar.gz
+
+# Development and Testing
+# --------------------------------------------------------------
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+test-results/
+test-reports/
+
+# Documentation Build Files (keep source, ignore builds)
+# --------------------------------------------------------------
+docs/_build/
+docs-site/
+site/
+_site/
+
+# Jupyter Notebooks (checkpoints)
+# --------------------------------------------------------------
+.ipynb_checkpoints
+
+# PDF Exports and Generated Files (keep source data)
+# --------------------------------------------------------------
+*.pdf
+output/*.pdf
+flask_app/static/generated/
+temp/
+tmp/
+
+# Large Data Files (reference in documentation instead)
+# --------------------------------------------------------------
+*.zip
+*.tar.gz
+*.rar
+*.7z
+data/large_datasets/
+data/raw/
+data/temp/
+
+# Backup Files
+# --------------------------------------------------------------
+*.bak
+*.backup
+*.orig
+*~
+
+# Heroku and Deployment Specific
+# --------------------------------------------------------------
+.env.production
+.env.staging
+heroku-installer.exe
+setup_heroku.py
+
+# AI and Analysis Temporary Files
+# --------------------------------------------------------------
+.github/instructions/codacy.instructions.md
+analysis_temp/
+processing_temp/
+model_cache/
+
+# Version Control and Git
+# --------------------------------------------------------------
+.git/
+*.patch
+*.diff
+
+# Application Specific
+# --------------------------------------------------------------
+# Keep requirements.txt files for deployment
+# Keep flask_app/ directory for web application
+# Keep docs/ and analysis/ for content
+# Keep README.md, EXECUTIVE_SUMMARY.md for documentation
+
+# Local Development Only
+# --------------------------------------------------------------
+local_settings.py
+dev_config.py
+.local/
+local/
