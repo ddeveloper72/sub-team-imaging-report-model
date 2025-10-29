@@ -1,6 +1,6 @@
 # Xt-EHR T7.2 Sub-team for Imaging Reports Model Analysis
 
-[![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/) [![Live Demo](https://img.shields.io/badge/demo-live-blue)](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/)
+[![Deploy Status](https://img.shields.io/badge/deploy-success-brightgreen)](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/) [![Analysis For Review](https://img.shields.io/badge/demo-live-blue)](https://sub-team-imaging-report-model-984bf6c1ddb8.herokuapp.com/)
 
 
 ## Live Analysis Dashboard
