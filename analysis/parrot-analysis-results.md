@@ -1,14 +1,37 @@
 # PARROT Dataset Analysis Results
 
+**Dataset**: [PARROT v1.0](https://github.com/PARROT-reports/PARROT_v1.0) - Multi-language Radiology Reports  
+**Analysis Date**: October 2025  
+**Analysis Framework**: Real-world usage patterns for Xt-EHR model validation
+
+## Dataset Overview
+
+The PARROT (PAneuropean Radiology Reporting cOrpus for arTificial intelligence) v1.0 dataset provides a comprehensive collection of real-world imaging reports for evidence-based analysis of healthcare data models.
+
+### Dataset Characteristics
+- **Total Reports**: 2,738 imaging reports
+- **Geographic Coverage**: 21 countries across Europe
+- **Language Diversity**: 14 languages
+- **Source Repository**: [PARROT-reports/PARROT_v1.0](https://github.com/PARROT-reports/PARROT_v1.0)
+- **Research Purpose**: Evidence-based assessment of imaging report data elements
+
+### Analysis Objective
+Compare real-world imaging report content against the [Xt-EHR Imaging Report model v0.2.1](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/imagingReport.fsh) to identify:
+- Essential data elements with high clinical usage
+- Administrative elements with limited real-world presence
+- Implementation priorities for basic vs. beyond basic classification
+
 ## Data Sources
 
+### Referenced Models
 This analysis is based on:
 
-- **PARROT v1.0 Dataset**: https://github.com/PARROT-reports/PARROT_v1.0
-  - Multi-language dataset of real-world radiology reports for research purposes
-  - 2,738 imaging reports across 14 languages and 21 countries
-- **Xt-EHR FHIR Implementation Guide**: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html
-  - Imaging Report model: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/StructureDefinition-EHDSImagingReport.html
+- **PARROT v1.0 Dataset**: [Multi-language Radiology Reports](https://github.com/PARROT-reports/PARROT_v1.0)
+  - Real-world evidence base for usage pattern analysis
+  - 2,738 reports across 14 languages and 21 countries
+- **Xt-EHR FHIR IG v0.2.1**: [EHDS Logical Information Models](https://www.xt-ehr.eu/fhir/models/history.html)
+  - Imaging Report Model: [EHDSImagingReport.fsh](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/imagingReport.fsh)
+  - Repository: [Xt-EHR/xt-ehr-common](https://github.com/Xt-EHR/xt-ehr-common)
   - Imaging Study model: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/StructureDefinition-EHDSImagingStudy.html
 
 ## Executive Summary

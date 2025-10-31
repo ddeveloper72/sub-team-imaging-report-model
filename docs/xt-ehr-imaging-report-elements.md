@@ -1,8 +1,27 @@
 # Xt-EHR Imaging Report Data Elements Analysis
 
-## Model: EHDSImagingReport
+**Source Model**: [EHDSImagingReport v0.2.1](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/imagingReport.fsh)  
+**Analysis Date**: October 2025  
+**Model Version**: Xt-EHR FHIR IG v0.2.1 (October 10, 2025)
 
-Based on the structure definition from: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/StructureDefinition-EHDSImagingReport.html
+## Model Overview
+
+The Xt-EHR Imaging Report model (`EHDSImagingReport`) provides a comprehensive structure for diagnostic imaging reports within the European Health Data Space (EHDS). This analysis examines each data element for real-world usage patterns and implementation priority.
+
+### Model Reference
+```fsh
+Logical: EHDSImagingReport
+Title: "Imaging report model"
+Parent: EHDSDocument
+Description: """Imaging report reflects the observations and interpretations 
+of one or more imaging studies, contains elements such as the reason why the 
+study is requested, relevant contextual medical information, the modality used 
+to acquire images and its settings, procedures and body localisations that 
+were used, a description of the observations and findings, exposure information, 
+conclusion and advice."""
+```
+
+**Source**: [imagingReport.fsh](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/imagingReport.fsh)
 
 ### Legend
 - **Cardinality**: 

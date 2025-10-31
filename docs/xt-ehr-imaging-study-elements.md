@@ -1,8 +1,27 @@
 # Xt-EHR Imaging Study Data Elements Analysis
 
-## Model: EHDSImagingStudy
+**Source Model**: [EHDSImagingStudy v0.2.1](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/imagingStudy.fsh)  
+**Analysis Date**: October 2025  
+**Model Version**: Xt-EHR FHIR IG v0.2.1 (October 10, 2025)
 
-Based on the structure definition from: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/StructureDefinition-EHDSImagingStudy.html
+## Model Overview
+
+The Xt-EHR Imaging Study model (`EHDSImagingStudy`) provides the structure for DICOM study metadata and organization within imaging reports. This model facilitates location of available images and organizes information according to the established imaging study framework.
+
+### Model Reference
+```fsh
+Logical: EHDSImagingStudy
+Parent: EHDSDataSet
+Title: "Imaging study model"
+Description: """Imaging study model includes the key information about the content 
+of an imaging study. It does not include image pixels but includes location pointers 
+to its image content and organises this information according to the well-established 
+model of an imaging study made of one or more series and each series made of instances 
+or images. Composed of a set of data (DICOM KOS) that facilitates the location of 
+all available images."""
+```
+
+**Source**: [imagingStudy.fsh](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/imagingStudy.fsh)
 
 ### Legend
 - **Cardinality**: 

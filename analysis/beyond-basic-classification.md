@@ -1,14 +1,18 @@
 # Beyond Basic Elements Analysis
 ## Xt-EHR Imaging Report Elements Classification
 
-Based on real-world usage analysis of 2,738 imaging reports from the PARROT dataset, this document identifies specific Xt-EHR elements that are candidates for "beyond basic" classification.
+**Analysis Framework**: Real-world usage patterns vs. Xt-EHR model specification  
+**Data Sources**:
+- **Xt-EHR FHIR IG v0.2.1**: [EHDS Logical Information Models](https://www.xt-ehr.eu/fhir/models/history.html)
+- **PARROT v1.0 Dataset**: [2,738 Multi-language Reports](https://github.com/PARROT-reports/PARROT_v1.0)
 
-## Data Sources
+Based on comprehensive analysis of real-world usage patterns, this document identifies specific Xt-EHR elements that are candidates for "beyond basic" classification.
 
-- **PARROT v1.0 Dataset**: https://github.com/PARROT-reports/PARROT_v1.0
-  - Real-world imaging reports for empirical usage analysis
-- **Xt-EHR FHIR Implementation Guide**: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html
-  - Imaging Report data model for classification analysis
+## Model References
+
+- **Source Model**: [EHDSImagingReport.fsh](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/imagingReport.fsh)
+- **Version**: Xt-EHR FHIR IG v0.2.1 (October 10, 2025)
+- **Repository**: [Xt-EHR/xt-ehr-common](https://github.com/Xt-EHR/xt-ehr-common)
 
 ## Methodology
 
