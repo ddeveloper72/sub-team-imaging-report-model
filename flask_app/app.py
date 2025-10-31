@@ -26,7 +26,13 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-i
 app.config['DEBUG'] = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # Base directory configuration
-BASE_DIR = Path(os.environ.get('BASE_DIR', Path(__file__).parent.parent))
+# Get the absolute path to the project root (parent of flask_app directory)
+if os.environ.get('BASE_DIR'):
+    BASE_DIR = Path(os.environ.get('BASE_DIR'))
+else:
+    # __file__ is flask_app/app.py, so parent.parent gets us to project root
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
 DOCS_DIR = BASE_DIR / 'docs'
 ANALYSIS_DIR = BASE_DIR / 'analysis'
 
