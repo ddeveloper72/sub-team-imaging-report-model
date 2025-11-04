@@ -19,6 +19,21 @@
     <!-- HCO Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='hco-styles.css') }}">
 
+    <!-- Mermaid.js for diagram rendering -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+
     <!-- Mobile-first responsive tables -->
     <style>
         @media (max-width: 768px) {
@@ -211,21 +226,41 @@
     <!-- Navigation - Mobile First -->
     <nav class="hse-nav">
         <div class="container-fluid px-3">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0 small">
-                    <li class="breadcrumb-item">
-                        <a href="{{ url_for('index') }}" class="text-decoration-none">
-                            <i class="fas fa-home me-1"></i>
-                            <span class="d-none d-sm-inline">Home</span>
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                        <span class="d-none d-lg-inline">{{ title.replace('-', ' ').replace('_', ' ').title() }}</span>
-                        <span class="d-inline d-lg-none">{{ title.split('-')[0] if '-' in title else title[:15]
-                            }}...</span>
-                    </li>
-                </ol>
-            </nav>
+            <div
+                class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-2">
+                <nav aria-label="breadcrumb" class="flex-grow-1">
+                    <ol class="breadcrumb mb-0 small">
+                        <li class="breadcrumb-item">
+                            <a href="{{ url_for('index') }}" class="text-decoration-none">
+                                <i class="fas fa-home me-1"></i>
+                                <span class="d-none d-sm-inline">Home</span>
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <span class="d-none d-lg-inline">{{ title.replace('-', ' ').replace('_', ' ').title()
+                                }}</span>
+                            <span class="d-inline d-lg-none">{{ title.split('-')[0] if '-' in title else title[:15]
+                                }}...</span>
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Search Bar -->
+                <div class="search-container" style="max-width: 400px;">
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="documentSearch" class="form-control" placeholder="Search in document..."
+                            aria-label="Search document">
+                        <button class="btn btn-outline-secondary" type="button" id="searchBtn" title="Find next">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn" title="Clear search"
+                            style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="searchResults" class="small text-muted mt-1" style="display: none;"></div>
+                </div>
+            </div>
         </div>
     </nav>
 
@@ -376,6 +411,25 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Mermaid Diagram Rendering -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Find all code blocks with mermaid class
+            const mermaidBlocks = document.querySelectorAll('pre code.language-mermaid, pre code.mermaid');
+
+            mermaidBlocks.forEach((block, index) => {
+                // Create a div to hold the mermaid diagram
+                const mermaidDiv = document.createElement('div');
+                mermaidDiv.className = 'mermaid';
+                mermaidDiv.textContent = block.textContent;
+
+                // Replace the code block with the mermaid div
+                const pre = block.parentElement;
+                pre.parentNode.replaceChild(mermaidDiv, pre);
+            });
+        });
+    </script>
+
     <!-- Mobile-first JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -482,6 +536,244 @@
                 // Could register a service worker for offline functionality
             });
         }
+    </script>
+
+    <!-- Document Search Functionality -->
+    <script>
+        (function () {
+            const searchInput = document.getElementById('documentSearch');
+            const searchBtn = document.getElementById('searchBtn');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const searchResults = document.getElementById('searchResults');
+            const documentContent = document.querySelector('.document-content');
+
+            let currentMatchIndex = 0;
+            let matches = [];
+            let originalHTML = documentContent.innerHTML;
+
+            // Function to make all links in document content open in new tab
+            function applyLinkTargets() {
+                const documentLinks = documentContent.querySelectorAll('a');
+                documentLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    // Only add target="_blank" to external links (not internal anchors or javascript)
+                    if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
+                        link.setAttribute('target', '_blank');
+                        link.setAttribute('rel', 'noopener noreferrer');
+
+                        // Add visual indicator for external links
+                        if (!link.querySelector('.fa-external-link-alt')) {
+                            const icon = document.createElement('i');
+                            icon.className = 'fas fa-external-link-alt ms-1';
+                            icon.style.fontSize = '0.8em';
+                            link.appendChild(icon);
+                        }
+                    }
+                });
+            }
+
+            // CSS for highlighting
+            const style = document.createElement('style');
+            style.textContent = `
+                .search-highlight {
+                    background-color: #fff59d;
+                    padding: 2px 0;
+                    border-radius: 2px;
+                }
+                .search-highlight-current {
+                    background-color: #ffa726;
+                    padding: 2px 0;
+                    border-radius: 2px;
+                    font-weight: bold;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Perform search
+            function performSearch() {
+                const searchTerm = searchInput.value.trim();
+
+                if (!searchTerm) {
+                    clearSearch();
+                    return;
+                }
+
+                // Clear previous highlights
+                documentContent.innerHTML = originalHTML;
+                matches = [];
+                currentMatchIndex = 0;
+
+                // Create a case-insensitive regex
+                const regex = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+
+                // Find all text nodes
+                const walker = document.createTreeWalker(
+                    documentContent,
+                    NodeFilter.SHOW_TEXT,
+                    null,
+                    false
+                );
+
+                const nodesToReplace = [];
+                let node;
+
+                while (node = walker.nextNode()) {
+                    const text = node.textContent;
+                    if (regex.test(text)) {
+                        nodesToReplace.push(node);
+                    }
+                }
+
+                // Replace text with highlighted spans
+                nodesToReplace.forEach((node, index) => {
+                    const parent = node.parentNode;
+                    const fragment = document.createDocumentFragment();
+                    const text = node.textContent;
+                    let lastIndex = 0;
+                    let match;
+
+                    const nodeRegex = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+
+                    while ((match = nodeRegex.exec(text)) !== null) {
+                        // Add text before match
+                        if (match.index > lastIndex) {
+                            fragment.appendChild(
+                                document.createTextNode(text.substring(lastIndex, match.index))
+                            );
+                        }
+
+                        // Add highlighted match
+                        const span = document.createElement('span');
+                        span.className = 'search-highlight';
+                        span.textContent = match[0];
+                        span.setAttribute('data-match-index', matches.length);
+                        fragment.appendChild(span);
+                        matches.push(span);
+
+                        lastIndex = match.index + match[0].length;
+                    }
+
+                    // Add remaining text
+                    if (lastIndex < text.length) {
+                        fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
+                    }
+
+                    parent.replaceChild(fragment, node);
+                });
+
+                // Update UI
+                if (matches.length > 0) {
+                    highlightCurrentMatch();
+                    searchResults.textContent = `Found ${matches.length} match${matches.length !== 1 ? 'es' : ''} (${currentMatchIndex + 1}/${matches.length})`;
+                    searchResults.style.display = 'block';
+                    clearBtn.style.display = 'inline-block';
+                } else {
+                    searchResults.textContent = 'No matches found';
+                    searchResults.style.display = 'block';
+                    clearBtn.style.display = 'inline-block';
+                }
+            }
+
+            // Highlight current match and scroll to it
+            function highlightCurrentMatch() {
+                if (matches.length === 0) return;
+
+                // Remove current highlight from all
+                matches.forEach(match => {
+                    match.classList.remove('search-highlight-current');
+                    match.classList.add('search-highlight');
+                });
+
+                // Add current highlight
+                const currentMatch = matches[currentMatchIndex];
+                currentMatch.classList.remove('search-highlight');
+                currentMatch.classList.add('search-highlight-current');
+
+                // Scroll to match with offset for navbar
+                const offset = 150; // Account for navbar height
+                const elementPosition = currentMatch.getBoundingClientRect().top + window.pageYOffset;
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Update counter
+                searchResults.textContent = `Found ${matches.length} match${matches.length !== 1 ? 'es' : ''} (${currentMatchIndex + 1}/${matches.length})`;
+            }
+
+            // Navigate to next match
+            function nextMatch() {
+                if (matches.length === 0) return;
+
+                currentMatchIndex = (currentMatchIndex + 1) % matches.length;
+                highlightCurrentMatch();
+            }
+
+            // Clear search
+            function clearSearch() {
+                documentContent.innerHTML = originalHTML;
+                matches = [];
+                currentMatchIndex = 0;
+                searchInput.value = '';
+                searchResults.style.display = 'none';
+                clearBtn.style.display = 'none';
+
+                // Re-apply table responsive data-labels
+                const tables = documentContent.querySelectorAll('table');
+                tables.forEach(table => {
+                    const headers = table.querySelectorAll('th');
+                    const rows = table.querySelectorAll('tbody tr');
+
+                    rows.forEach(row => {
+                        const cells = row.querySelectorAll('td');
+                        cells.forEach((cell, index) => {
+                            if (headers[index]) {
+                                cell.setAttribute('data-label', headers[index].textContent.trim());
+                            }
+                        });
+                    });
+                });
+
+                // Re-apply link targets after restoring original HTML
+                applyLinkTargets();
+            }
+
+            // Event listeners
+            searchBtn.addEventListener('click', function () {
+                if (matches.length === 0) {
+                    performSearch();
+                } else {
+                    nextMatch();
+                }
+            });
+
+            clearBtn.addEventListener('click', clearSearch);
+
+            searchInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (matches.length === 0) {
+                        performSearch();
+                    } else {
+                        nextMatch();
+                    }
+                } else if (e.key === 'Escape') {
+                    clearSearch();
+                }
+            });
+
+            // Clear highlights when input changes
+            searchInput.addEventListener('input', function () {
+                if (this.value.trim() === '') {
+                    clearSearch();
+                }
+            });
+
+            // Apply link targets on page load
+            applyLinkTargets();
+        })();
     </script>
 </body>
 

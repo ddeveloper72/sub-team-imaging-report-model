@@ -18,6 +18,68 @@
 
     <!-- HCO Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='hco-styles.css') }}">
+
+    <!-- Autocomplete Styles -->
+    <style>
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #ced4da;
+            border-top: none;
+            border-radius: 0 0 0.25rem 0.25rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-items {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .autocomplete-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.875rem;
+            transition: background-color 0.15s;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-item:hover,
+        .autocomplete-item.active {
+            background-color: #e9ecef;
+        }
+
+        .autocomplete-item strong {
+            color: #005f5f;
+        }
+
+        .autocomplete-item small {
+            display: block;
+            color: #6c757d;
+            font-size: 0.75rem;
+            margin-top: 2px;
+        }
+
+        .autocomplete-category {
+            padding: 6px 12px;
+            background-color: #f8f9fa;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #495057;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -48,7 +110,8 @@
     <!-- Navigation - Mobile First -->
     <nav class="hse-nav">
         <div class="container-fluid px-3">
-            <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between">
+            <div
+                class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3">
                 <nav aria-label="breadcrumb" class="mb-2 mb-sm-0">
                     <ol class="breadcrumb mb-0 small">
                         <li class="breadcrumb-item">
@@ -63,7 +126,27 @@
                         </li>
                     </ol>
                 </nav>
-                <div class="d-flex gap-2 flex-wrap">
+
+                <!-- Search Bar for Document Library -->
+                <div class="search-container flex-grow-1" style="max-width: 500px; position: relative;">
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="librarySearch" class="form-control"
+                            placeholder="Search documents by name or category..." aria-label="Search documents"
+                            autocomplete="off">
+                        <button class="btn btn-outline-secondary" type="button" id="clearSearchBtn" title="Clear search"
+                            style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <!-- Autocomplete Dropdown -->
+                    <div id="autocompleteDropdown" class="autocomplete-dropdown" style="display: none;">
+                        <div class="autocomplete-items"></div>
+                    </div>
+                    <div id="searchResults" class="small text-muted mt-1"
+                        style="min-height: 1.2em; visibility: hidden;">&nbsp;</div>
+                </div>
+
+                <div class="d-flex gap-2 flex-wrap flex-shrink-0">
                     <a href="{{ url_for('document_collection') }}" class="btn btn-hse-primary btn-sm">
                         <i class="fas fa-layer-group me-1"></i>
                         <span class="d-none d-sm-inline">Bulk PDF</span>
@@ -274,6 +357,25 @@
                     card.classList.add('fade-in');
                 }, index * 100);
             });
+
+            // Make all external links open in new tab
+            const allLinks = document.querySelectorAll('a');
+            allLinks.forEach(link => {
+                // Only modify external links (http/https) that are not internal navigation
+                const href = link.getAttribute('href');
+                if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+
+                    // Add visual indicator for external links if not already present
+                    if (!link.querySelector('.fa-external-link-alt') && !link.closest('.btn')) {
+                        const icon = document.createElement('i');
+                        icon.className = 'fas fa-external-link-alt ms-1';
+                        icon.style.fontSize = '0.8em';
+                        link.appendChild(icon);
+                    }
+                }
+            });
         });
 
         // Add loading spinner for PDF exports
@@ -291,6 +393,333 @@
                 }, 5000);
             });
         });
+    </script>
+
+    <!-- Document Library Search Functionality -->
+    <script>
+        (function () {
+            const searchInput = document.getElementById('librarySearch');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const searchResults = document.getElementById('searchResults');
+            const documentCards = document.querySelectorAll('.hse-card');
+            const categoryHeaders = document.querySelectorAll('main > div > div.d-flex');
+
+            let visibleCount = 0;
+            let documentContentCache = {}; // Cache for loaded document content
+            let isLoadingContent = false;
+            let searchTimeout = null;
+
+            // Autocomplete elements
+            const autocompleteDropdown = document.getElementById('autocompleteDropdown');
+            const autocompleteItems = autocompleteDropdown.querySelector('.autocomplete-items');
+            let currentFocus = -1;
+
+            // Common search terms (will be enhanced with content-based terms)
+            let searchSuggestions = [
+                { term: 'header', category: 'Common Terms', description: 'Document header elements' },
+                { term: 'patient', category: 'Common Terms', description: 'Patient information' },
+                { term: 'body', category: 'Common Terms', description: 'Document body content' },
+                { term: 'modality', category: 'Medical Terms', description: 'Imaging modality' },
+                { term: 'findings', category: 'Medical Terms', description: 'Clinical findings' },
+                { term: 'conclusion', category: 'Medical Terms', description: 'Report conclusions' },
+                { term: 'impression', category: 'Medical Terms', description: 'Clinical impressions' },
+                { term: 'observation', category: 'Medical Terms', description: 'Clinical observations' },
+                { term: 'diagnosis', category: 'Medical Terms', description: 'Diagnostic information' },
+                { term: 'procedure', category: 'Medical Terms', description: 'Medical procedures' },
+                { term: 'anatomy', category: 'Medical Terms', description: 'Anatomical references' },
+                { term: 'element', category: 'Technical Terms', description: 'Data elements' },
+                { term: 'classification', category: 'Technical Terms', description: 'Element classification' },
+                { term: 'basic', category: 'Categories', description: 'Basic elements' },
+                { term: 'intermediate', category: 'Categories', description: 'Intermediate elements' },
+                { term: 'beyond basic', category: 'Categories', description: 'Beyond basic elements' },
+                { term: 'parrot', category: 'Data Sources', description: 'PARROT dataset' },
+                { term: 'xt-ehr', category: 'Data Sources', description: 'Xt-EHR model' },
+                { term: 'fhir', category: 'Standards', description: 'FHIR standard' },
+                { term: 'dicom', category: 'Standards', description: 'DICOM standard' }
+            ];
+
+            // Show autocomplete suggestions
+            function showAutocomplete(searchTerm) {
+                const term = searchTerm.toLowerCase();
+
+                if (term.length < 2) {
+                    autocompleteDropdown.style.display = 'none';
+                    return;
+                }
+
+                // Filter suggestions
+                const matches = searchSuggestions.filter(s =>
+                    s.term.toLowerCase().includes(term) ||
+                    s.description.toLowerCase().includes(term)
+                ).slice(0, 8); // Limit to 8 suggestions
+
+                if (matches.length === 0) {
+                    autocompleteDropdown.style.display = 'none';
+                    return;
+                }
+
+                // Group by category
+                const grouped = {};
+                matches.forEach(match => {
+                    if (!grouped[match.category]) {
+                        grouped[match.category] = [];
+                    }
+                    grouped[match.category].push(match);
+                });
+
+                // Build dropdown HTML
+                let html = '';
+                Object.keys(grouped).forEach(category => {
+                    html += `<div class="autocomplete-category">${category}</div>`;
+                    grouped[category].forEach(match => {
+                        const highlightedTerm = match.term.replace(
+                            new RegExp(term, 'gi'),
+                            matched => `<strong>${matched}</strong>`
+                        );
+                        html += `
+                            <div class="autocomplete-item" data-value="${match.term}">
+                                ${highlightedTerm}
+                                <small>${match.description}</small>
+                            </div>
+                        `;
+                    });
+                });
+
+                autocompleteItems.innerHTML = html;
+                autocompleteDropdown.style.display = 'block';
+                currentFocus = -1;
+
+                // Add click handlers
+                autocompleteItems.querySelectorAll('.autocomplete-item').forEach(item => {
+                    item.addEventListener('click', function () {
+                        searchInput.value = this.getAttribute('data-value');
+                        autocompleteDropdown.style.display = 'none';
+                        filterDocuments();
+                    });
+                });
+            }
+
+            // Navigate autocomplete with keyboard
+            function navigateAutocomplete(direction) {
+                const items = autocompleteItems.querySelectorAll('.autocomplete-item');
+                if (items.length === 0) return;
+
+                // Remove active class
+                if (currentFocus >= 0 && currentFocus < items.length) {
+                    items[currentFocus].classList.remove('active');
+                }
+
+                // Update focus
+                currentFocus += direction;
+                if (currentFocus >= items.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = items.length - 1;
+
+                // Add active class
+                items[currentFocus].classList.add('active');
+                items[currentFocus].scrollIntoView({ block: 'nearest' });
+            }
+
+            // Select current autocomplete item
+            function selectAutocomplete() {
+                const items = autocompleteItems.querySelectorAll('.autocomplete-item');
+                if (currentFocus >= 0 && currentFocus < items.length) {
+                    items[currentFocus].click();
+                }
+            }
+
+            // Perform search/filter
+            async function filterDocuments() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                visibleCount = 0;
+
+                if (!searchTerm) {
+                    // Show all documents and categories
+                    documentCards.forEach(card => {
+                        const cardColumn = card.closest('[class*="col-"]');
+                        if (cardColumn) {
+                            cardColumn.style.display = '';
+                        }
+                    });
+                    categoryHeaders.forEach(header => {
+                        const categorySection = header.closest('.mb-4');
+                        if (categorySection) {
+                            categorySection.style.display = '';
+                        }
+                    });
+                    searchResults.style.visibility = 'hidden';
+                    searchResults.textContent = '\u00A0'; // Non-breaking space
+                    clearBtn.style.display = 'none';
+                    return;
+                }
+
+                // Show searching indicator
+                searchResults.textContent = 'Searching documents...';
+                searchResults.className = 'small text-muted mt-1';
+                searchResults.style.visibility = 'visible';
+
+                // Filter documents with content search
+                const searchPromises = Array.from(documentCards).map(async card => {
+                    const cardTitle = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+                    const cardPath = card.querySelector('.card-text small')?.textContent.toLowerCase() || '';
+                    const categorySection = card.closest('.mb-4');
+                    const categoryName = categorySection?.querySelector('h3')?.textContent.toLowerCase() || '';
+
+                    // Get document path for content search
+                    const viewLink = card.querySelector('a[href*="/document/"]');
+                    let contentMatches = false;
+
+                    // Search in document content if we have a link
+                    if (viewLink && searchTerm.length >= 3) { // Only search content for 3+ characters
+                        const docUrl = viewLink.href;
+                        try {
+                            // Check cache first
+                            if (!documentContentCache[docUrl]) {
+                                const response = await fetch(docUrl);
+                                if (response.ok) {
+                                    const html = await response.text();
+                                    const parser = new DOMParser();
+                                    const doc = parser.parseFromString(html, 'text/html');
+                                    const content = doc.querySelector('.document-content');
+                                    if (content) {
+                                        // Extract text content and cache it
+                                        documentContentCache[docUrl] = content.textContent.toLowerCase();
+                                        console.log('Cached content for:', docUrl.split('/').pop(), '- length:', documentContentCache[docUrl].length);
+                                    } else {
+                                        documentContentCache[docUrl] = '';
+                                        console.log('No content found for:', docUrl.split('/').pop());
+                                    }
+                                } else {
+                                    documentContentCache[docUrl] = '';
+                                }
+                            }
+                            contentMatches = documentContentCache[docUrl].includes(searchTerm);
+                            if (contentMatches) {
+                                console.log('Match found in:', docUrl.split('/').pop());
+                            }
+                        } catch (error) {
+                            console.log('Content search error for', docUrl.split('/').pop(), ':', error);
+                            documentContentCache[docUrl] = ''; // Cache empty to avoid retrying
+                        }
+                    }
+
+                    const matches = cardTitle.includes(searchTerm) ||
+                        cardPath.includes(searchTerm) ||
+                        categoryName.includes(searchTerm) ||
+                        contentMatches;
+
+                    return { card, matches };
+                });
+
+                // Wait for all searches to complete
+                const results = await Promise.all(searchPromises);
+
+                // Apply visibility based on results
+                results.forEach(({ card, matches }) => {
+                    const cardColumn = card.closest('[class*="col-"]');
+                    if (cardColumn) {
+                        if (matches) {
+                            cardColumn.style.display = '';
+                            visibleCount++;
+                        } else {
+                            cardColumn.style.display = 'none';
+                        }
+                    }
+                });
+
+                // Hide empty categories
+                categoryHeaders.forEach(header => {
+                    const categorySection = header.closest('.mb-4');
+                    if (!categorySection) return;
+
+                    const visibleCards = categorySection.querySelectorAll('[class*="col-"]:not([style*="display: none"])');
+
+                    if (visibleCards.length === 0) {
+                        categorySection.style.display = 'none';
+                    } else {
+                        categorySection.style.display = '';
+                        // Update category badge count
+                        const badge = header.querySelector('.badge');
+                        if (badge) {
+                            badge.textContent = visibleCards.length;
+                        }
+                    }
+                });
+
+                // Update search results
+                if (visibleCount === 0) {
+                    searchResults.textContent = 'No documents found';
+                    searchResults.className = 'small text-danger mt-1';
+                } else {
+                    searchResults.textContent = `Showing ${visibleCount} document${visibleCount !== 1 ? 's' : ''}`;
+                    searchResults.className = 'small text-success mt-1';
+                }
+                searchResults.style.visibility = 'visible';
+                clearBtn.style.display = 'inline-block';
+            }
+
+            // Clear search
+            function clearSearch() {
+                searchInput.value = '';
+                filterDocuments();
+                searchResults.style.visibility = 'hidden';
+                searchResults.textContent = '\u00A0'; // Non-breaking space
+                clearBtn.style.display = 'none';
+                autocompleteDropdown.style.display = 'none';
+                currentFocus = -1;
+            }
+
+            // Event listeners with debounce
+            searchInput.addEventListener('input', function () {
+                // Show autocomplete suggestions
+                const value = this.value.trim();
+                if (value.length >= 2) {
+                    showAutocomplete(value);
+                } else {
+                    autocompleteDropdown.style.display = 'none';
+                }
+
+                // Debounced search
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(filterDocuments, 300); // Wait 300ms after typing stops
+            });
+
+            searchInput.addEventListener('keydown', function (e) {
+                const isDropdownVisible = autocompleteDropdown.style.display === 'block';
+
+                if (e.key === 'ArrowDown' && isDropdownVisible) {
+                    e.preventDefault();
+                    navigateAutocomplete(1);
+                } else if (e.key === 'ArrowUp' && isDropdownVisible) {
+                    e.preventDefault();
+                    navigateAutocomplete(-1);
+                } else if (e.key === 'Enter' && isDropdownVisible && currentFocus >= 0) {
+                    e.preventDefault();
+                    selectAutocomplete();
+                } else if (e.key === 'Escape') {
+                    if (isDropdownVisible) {
+                        autocompleteDropdown.style.display = 'none';
+                        currentFocus = -1;
+                    } else {
+                        clearSearch();
+                    }
+                }
+            });
+
+            clearBtn.addEventListener('click', clearSearch);
+
+            // Add highlighting on focus
+            searchInput.addEventListener('focus', function () {
+                this.select();
+            });
+
+            // Close autocomplete when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!searchInput.contains(e.target) && !autocompleteDropdown.contains(e.target)) {
+                    autocompleteDropdown.style.display = 'none';
+                    currentFocus = -1;
+                }
+            });
+        })();
     </script>
 </body>
 

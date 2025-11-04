@@ -504,6 +504,25 @@
 
             // Initialize
             updateSelection();
+
+            // Make all external links open in new tab
+            const allLinks = document.querySelectorAll('a');
+            allLinks.forEach(link => {
+                // Only modify external links (http/https) that are not internal navigation
+                const href = link.getAttribute('href');
+                if (href && (href.startsWith('http://') || href.startsWith('https://'))) {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+
+                    // Add visual indicator for external links if not already present
+                    if (!link.querySelector('.fa-external-link-alt') && !link.closest('.btn')) {
+                        const icon = document.createElement('i');
+                        icon.className = 'fas fa-external-link-alt ms-1';
+                        icon.style.fontSize = '0.8em';
+                        link.appendChild(icon);
+                    }
+                }
+            });
         });
     </script>
 </body>
