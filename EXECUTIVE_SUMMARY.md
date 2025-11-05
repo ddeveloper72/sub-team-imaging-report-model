@@ -6,9 +6,27 @@
 **Date**: October 2025  
 **Analysis Framework**: Real-world usage patterns vs. model specification
 
+### 🤖 AI Analysis Attribution
+
+**In accordance with EU AI Act Article 52 (Transparency Obligations):**
+
+This executive summary and the underlying analysis were compiled with the assistance of **Claude Sonnet 4.5** (Anthropic), a General-Purpose AI model. The AI system was used for:
+- Data analysis and statistical calculations
+- Pattern identification across 2,738 imaging reports
+- Element classification and categorization
+- Report synthesis and documentation generation
+
+All findings have been validated against source data and are subject to expert review by healthcare informatics specialists within the Xt-EHR T7.2 Sub-team.
+
+**Regulatory Compliance**: This project complies with the **EU Artificial Intelligence Act** [(Regulation EU 2024/1689)](https://eur-lex.europa.eu/eli/reg/2024/1689/oj). For detailed compliance information, see [EU-AI-ACT-COMPLIANCE.md](docs/EU-AI-ACT-COMPLIANCE.md).
+
+---
+
 **Data Sources & Acknowledgments**:
 - **Xt-EHR FHIR Implementation Guide**: https://build.fhir.org/ig/Xt-EHR/xt-ehr-common/index.html
 - **PARROT v1.0 Dataset**: https://github.com/PARROT-reports/PARROT_v1.0
+- **AI Analysis Tool**: Claude Sonnet 4.5 (Anthropic) - GPAI Model
+- **EU AI Act Reference**: https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai
 
 ---
 

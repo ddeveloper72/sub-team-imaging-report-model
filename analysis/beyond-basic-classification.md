@@ -8,6 +8,10 @@
 
 Based on comprehensive analysis of real-world usage patterns, this document identifies specific Xt-EHR elements that are candidates for "beyond basic" classification.
 
+### 🤖 AI Analysis Attribution
+
+**EU AI Act Compliance**: This classification analysis was compiled with the assistance of **Claude Sonnet 4.5** (Anthropic), a General-Purpose AI model, in accordance with Article 52 transparency requirements. All element classifications are validated against source data and subject to expert review. See [EU-AI-ACT-COMPLIANCE.md](../docs/EU-AI-ACT-COMPLIANCE.md) for details.
+
 ## Model References
 
 - **Source Model**: [EHDSImagingReport.fsh](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/imagingReport.fsh)

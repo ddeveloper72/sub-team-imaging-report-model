@@ -90,14 +90,42 @@
 - Specialized institutional requirements
 - High complexity implementation
 
+## 🇪🇺 EU AI Act Compliance References
+
+### AI Regulatory Framework
+| Resource | Link | Purpose |
+|----------|------|---------|
+| **EU AI Act (Full Text)** | [Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj) | Primary legislation |
+| **EU AI Act Overview** | [European Commission AI Hub](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai) | Policy guidance and implementation |
+| **European Approach to AI** | [Excellence and Trust Framework](https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence) | Strategic EU AI approach |
+| **Irish Implementation** | [Enterprise Ireland AI Act](https://enterprise.gov.ie/en/what-we-do/innovation-research-development/artificial-intelligence/eu-ai-act/) | National guidance and timeline |
+| **AI Act Service Desk** | [Single Information Platform](https://ai-act-service-desk.ec.europa.eu/en) | Interactive compliance tools |
+
+### AI Analysis Attribution
+**Model Used**: Claude Sonnet 4.5 (Anthropic)  
+**Classification**: General-Purpose AI (GPAI) Model under EU AI Act Article 3(44) and (51)  
+**Transparency Compliance**: Article 52 - AI-generated content disclosure  
+**Project Compliance Document**: [EU-AI-ACT-COMPLIANCE.md](EU-AI-ACT-COMPLIANCE.md)
+
+### Healthcare and EHDS Context
+| Resource | Link | Purpose |
+|----------|------|---------|
+| **European Health Data Space** | [EHDS Regulation](https://health.ec.europa.eu/ehealth-digital-health-and-care/european-health-data-space_en) | Healthcare data framework |
+| **GDPR** | [Regulation (EU) 2016/679](https://eur-lex.europa.eu/eli/reg/2016/679/oj) | Data protection compliance |
+
+---
+
 ## 📋 Document Cross-References
 
 | Document | Purpose | Key References |
 |----------|---------|----------------|
-| [README.md](README.md) | Project overview with enhanced references | Original prompt, methodology, source links |
-| [Process Flow](docs/analysis-process-flow.md) | Detailed methodology | Visual process diagram, validation steps |
-| [Element Analysis](docs/xt-ehr-imaging-report-elements.md) | Complete element inventory | Direct model references, usage patterns |
-| [Beyond Basic Classification](analysis/beyond-basic-classification.md) | Specialized elements analysis | Low-usage elements, admin focus |
+| [README.md](../README.md) | Project overview with EU AI Act compliance | Original prompt, methodology, AI attribution |
+| [EU AI Act Compliance](EU-AI-ACT-COMPLIANCE.md) | Regulatory compliance statement | Risk classification, transparency, GPAI obligations |
+| [Executive Summary](../EXECUTIVE_SUMMARY.md) | Key findings with AI attribution | Results, recommendations, compliance disclosure |
+| [Process Flow](analysis-process-flow.md) | Detailed methodology | Visual process diagram, validation steps |
+| [Element Analysis](xt-ehr-imaging-report-elements.md) | Complete element inventory | Direct model references, usage patterns |
+| [PARROT Analysis](../analysis/parrot-analysis-results.md) | Dataset analysis with AI attribution | Real-world evidence, statistical analysis |
+| [Beyond Basic Classification](../analysis/beyond-basic-classification.md) | Specialized elements analysis | Low-usage elements, admin focus |
 | [PARROT Analysis](analysis/parrot-analysis-results.md) | Real-world usage evidence | Quantitative statistics, coverage analysis |
 | [Executive Summary](EXECUTIVE_SUMMARY.md) | Key findings and recommendations | Evidence-based guidance, implementation strategy |
 

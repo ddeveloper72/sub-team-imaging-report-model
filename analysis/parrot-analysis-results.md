@@ -4,6 +4,18 @@
 **Analysis Date**: October 2025  
 **Analysis Framework**: Real-world usage patterns for Xt-EHR model validation
 
+### 🤖 AI-Assisted Analysis Attribution
+
+**AI System Used**: Claude Sonnet 4.5 (Anthropic) - General-Purpose AI Model
+
+This analysis was compiled with AI assistance in accordance with **EU AI Act Article 52** transparency requirements. The AI system performed:
+- Statistical analysis of 2,738 imaging reports
+- Pattern recognition and frequency calculations
+- Data element mapping and classification
+- Report compilation and visualization
+
+All findings are validated against source data and subject to expert review. See [EU-AI-ACT-COMPLIANCE.md](../docs/EU-AI-ACT-COMPLIANCE.md) for regulatory compliance details.
+
 ## Dataset Overview
 
 The PARROT (PAneuropean Radiology Reporting cOrpus for arTificial intelligence) v1.0 dataset provides a comprehensive collection of real-world imaging reports for evidence-based analysis of healthcare data models.

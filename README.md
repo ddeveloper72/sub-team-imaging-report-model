@@ -25,6 +25,25 @@ The dashboard provides:
 
 This project provides evidence-based analysis of the **Xt-EHR Imaging Report information model** by comparing theoretical model elements against real-world usage patterns from the **PARROT dataset**. Our goal is to identify which data elements are essential for core clinical workflows versus those serving specialized administrative or technical functions.
 
+### 🤖 AI Analysis Attribution
+
+**In accordance with EU AI Act transparency requirements (Article 52):**
+
+> **AI-Assisted Analysis**: The data analysis, pattern identification, and report compilation in this project were performed with the assistance of **Claude Sonnet 4.5** (Anthropic), a large language model and General-Purpose AI system. All findings have been validated against source data from the PARROT v1.0 dataset and Xt-EHR model specifications, and are subject to expert review by the Xt-EHR T7.2 Sub-team.
+
+**Scope of AI Involvement**:
+- Analysis of 2,738 real-world imaging reports from PARROT v1.0 dataset
+- Pattern recognition and element usage frequency calculations
+- Comparative mapping between real-world data and Xt-EHR model specifications
+- Classification recommendations (Basic, Intermediate, Beyond Basic categories)
+- Documentation synthesis and report generation
+
+**Human Oversight**: All AI-generated analysis and recommendations undergo expert validation and are reviewed within the context of healthcare interoperability standards and clinical practice.
+
+**📖 Compliance Resources**:
+- [EU AI Act Compliance Statement](docs/EU-AI-ACT-COMPLIANCE.md) - Full regulatory compliance documentation
+- [AI Attribution Quick Reference](docs/AI-ATTRIBUTION-QUICK-REFERENCE.md) - Attribution templates and FAQ
+
 ## Analysis Methodology
 
 ### 🔄 Process Flow
@@ -191,6 +210,33 @@ See `flask_app/README.md` for detailed setup and deployment instructions.
 - **Coverage**: Full workflow support and regulatory compliance
 - **ROI**: Low-Medium - justified only for specialized institutional needs
 
+## Regulatory Compliance
+
+### 🇪🇺 EU AI Act Compliance
+
+This project operates in accordance with the **European Union Artificial Intelligence Act** [(Regulation EU 2024/1689)](https://eur-lex.europa.eu/eli/reg/2024/1689/oj), which establishes harmonized rules for trustworthy AI in Europe.
+
+**Classification**: Limited Risk (Transparency Requirements)
+- AI-assisted analysis for healthcare data model evaluation
+- Transparency obligations fulfilled through clear AI attribution
+- Subject to human oversight and expert validation
+
+**Key Resources**:
+- 📋 [EU AI Act - European Commission](https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai)
+- 🇮🇪 [Irish Implementation - Enterprise Ireland](https://enterprise.gov.ie/en/what-we-do/innovation-research-development/artificial-intelligence/eu-ai-act/)
+- 🏛️ [European Approach to AI](https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence)
+- 📖 [Project Compliance Statement](docs/EU-AI-ACT-COMPLIANCE.md) - Detailed compliance documentation
+
+**Timeline Context**:
+- AI Act entered into force: 2 August 2024
+- Transparency requirements (Article 52): In effect
+- GPAI obligations: 2 August 2025
+- Full application: 2 August 2026
+
+This project aligns with the **European Health Data Space (EHDS)** initiative and supports trustworthy AI principles in healthcare interoperability.
+
+---
+
 ## Acknowledgments
 
 This project builds upon the work of several important initiatives:
@@ -206,13 +252,21 @@ This project builds upon the work of several important initiatives:
 - **Contribution**: The PARROT v1.0 dataset provides the foundational real-world data for this analysis. This comprehensive collection of 2,738 multi-language imaging reports across 14 languages and 21 countries enables evidence-based assessment of actual clinical usage patterns.
 - **Reference**: *PARROT v1.0 - A multi-language dataset of real-world radiology reports for research purposes*
 
+### 🤖 AI Analysis Tools
+- **Model**: Claude Sonnet 4.5 (Anthropic)
+- **Classification**: General-Purpose AI (GPAI) Model under EU AI Act
+- **Role**: AI-assisted data analysis, pattern recognition, and report compilation
+- **Governance**: Subject to EU AI Act transparency requirements and human oversight
+- **Contribution**: Enabled efficient analysis of large-scale dataset (2,738 reports) with comprehensive pattern identification and automated documentation generation
+
 ### 🔗 Model Provenance
 Our analysis maintains full traceability to source materials:
 - **Xt-EHR Elements**: Direct references to [FSH model definitions](https://github.com/xt-ehr/xt-ehr-common/tree/main/input/fsh/EHDS-models/)
 - **Real-World Evidence**: Quantitative analysis of PARROT dataset usage patterns
-- **Classification Rationale**: Evidence-based justification for each element category
+- **AI-Assisted Classification**: Evidence-based justification validated by domain experts
+- **Regulatory Compliance**: Aligned with EU AI Act and EHDS frameworks
 
-We gratefully acknowledge the contributions of both projects in enabling this comparative analysis and advancing standardized health data exchange.
+We gratefully acknowledge the contributions of all projects and tools in enabling this comparative analysis and advancing standardized, trustworthy health data exchange.
 
 ## License
 
