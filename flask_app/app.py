@@ -150,6 +150,8 @@ class MarkdownRenderer:
     
     def render_markdown(self, content):
         """Convert markdown to HTML"""
+        # Reset the markdown instance to clear any cached state
+        self.md.reset()
         return self.md.convert(content)
     
     def clean_html_for_reportlab(self, html_content):
