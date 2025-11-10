@@ -327,6 +327,19 @@ class MarkdownRenderer:
         """Get all markdown files from docs and analysis directories"""
         files = []
         
+        # Files to exclude from the home page (deployment-related)
+        excluded_files = {
+            'DEPLOYMENT.md',
+            'HEROKU_QUICKSTART.md', 
+            'DEPLOYMENT_CONFIG.md'
+        }
+        
+        # Root files that should be in Documentation category
+        documentation_root_files = {
+            'EXECUTIVE_SUMMARY.md',
+            'README.md'
+        }
+        
         # Get docs files
         if DOCS_DIR.exists():
             for file in DOCS_DIR.glob('*.md'):
@@ -347,12 +360,22 @@ class MarkdownRenderer:
                     'file_path': str(file)
                 })
         
-        # Add root level files
+        # Add root level files (excluding deployment docs)
         for file in BASE_DIR.glob('*.md'):
+            # Skip excluded deployment files
+            if file.name in excluded_files:
+                continue
+                
+            # Categorize root files
+            if file.name in documentation_root_files:
+                category = 'Documentation'
+            else:
+                category = 'Project Root'
+                
             files.append({
                 'name': file.stem,
                 'path': str(file.relative_to(BASE_DIR)),
-                'category': 'Project Root',
+                'category': category,
                 'file_path': str(file)
             })
         
